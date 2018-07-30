@@ -36,8 +36,8 @@ printLines()
 ###########################################################
 cd $SCRIPTS_DIR
 info "Initialising GATEWAY"
-#($q tick/gateway.q -p $GATEWAY_PORT > /dev/null 2>&1 &)
-rlwrap -r $q tick/gateway.q -p $GATEWAY_PORT 
+#($q tick/gateway.q -p $GATEWAY_PORT -U $USERS > /dev/null 2>&1 &)
+rlwrap -r $q tick/gateway.q -p $GATEWAY_PORT -U $USERS 
 sleep 2
 if [[ ! -z $(ps -ef|grep $GATEWAY_PORT|grep gateway.q|grep -v bash) ]]
 then 

@@ -43,26 +43,14 @@ printLines()
 #	if [[ $1 == "RDB1" ]]
 #	then
 cd $SCRIPTS_DIR
-		info "Initialising RDB1 and subscribing to trade and quote"
-		#$q tick/r.q :$TICK_PORT -table "trade;quote" -p $RDB1_PORT 
-		($q tick/r.q :$TICK_PORT -table "trade;quote" -p $RDB1_PORT > /dev/null 2>&1 &)
+		info "Initialising CENTRAL BACKEND Process"
+		($q tick/backend.q -p $BACKEND_PORT > /dev/null 2>&1 &)
+#		$q tick/backend.q -p $BACKEND_PORT
 		sleep 2
-		if [[ ! -z $(ps -ef|grep $RDB1_PORT|grep r.q|grep -v bash) ]]
+		if [[ ! -z $(ps -ef|grep $BACKEND_PORT|grep backend.q|grep -v bash) ]]
 		then 
-		info "RDB1 started on port $RDB1_PORT"
+		info "CENTRAL BACKEND Process started on port $BACKEND_PORT"
 		else
-		err "RDB1 failed to start"
+		err "CENTRAL BACKEND Process failed to start"
 		fi
-#	fi
-#	if [[ $1 == "RDB2" ]]
-#	then 
-		info "Initialising RDB2 and subscribing to aggregrate"
-		($q tick/r.q :$TICK_PORT -table "aggreg" -p $RDB2_PORT > /dev/null 2>&1 &)
-		sleep 2  
-		if [[ ! -z $(ps -ef|grep $RDB2_PORT|grep r.q|grep -v bash) ]]
-		then
-		info "RDB2 started on port $RDB2_PORT"
-		else
-                err "RDB2 failed to start"
-                fi
 #	fi

@@ -32,10 +32,9 @@ textarea{
 
 <!-- Navigation -->
 <nav class="w3-bar w3-black">
-  <a href="Table_Fixed_Header/index.html" class="w3-button w3-bar-item">Home</a>
-  <a href="#band" class="w3-button w3-bar-item"></a>
-  <a href="#tour" class="w3-button w3-bar-item"></a>
-  <a href="#contact" class="w3-button w3-bar-item"></a>
+  <a href="index.html" class="w3-button w3-bar-item">Logout</a>
+  <a class="w3-bar-item">Signed in as: </a>
+  <a class="w3-bar-item" name="username"></a>
 </nav>
 
 <!-- Slide Show -->
@@ -46,10 +45,8 @@ textarea{
   <h2 class="w3-wide">WebSocket</h2>
   <p class="w3-opacity"><i>Tickerplant</i></p>
  	<form action="">
-		<input class="w3-btn w3-border-grey" type="button"        id="connectBtn" 	value="connect"   onclick="connect()"    >
 		<input class="w3-border-grey" 	type="text"   		id="x" 			  placeholder="q)"       >
 		<input class="w3-btn w3-border-grey" type="submit"        value="send"      onclick="return send()">
-		<input class="w3-btn w3-border-grey" type="button"        value="close"     onclick="ws.close()"   >
 	</form>
 	<span class="sym"></span>
 </section>
@@ -103,20 +100,17 @@ textarea{
 <script src="./dist/bundle.min.js"></script>
 <script>
 var myIndex = 0;
-var ws,out=document.getElementById("out");
+var out=document.getElementById("out");
 var sym;
 var wsTmp, wsJsonObj;
+var username=localStorage.getItem('user');
+var password=localStorage.getItem('pass');
+document.getElementsByName("username")[0].append(username);
 function connect()
 {if ("WebSocket" in window)
- {var l = window.location;ws = new WebSocket("ws://" + (l.hostname ? l.hostname : "localhost") + ":" + (l.port ? l.port : "5030") + "/"); 
+ {var l = window.location;ws = new WebSocket("ws://" + username + ":" +  password + "@" + (l.hostname ? l.hostname : "localhost") + ":" + (l.port ? l.port : "5030") + "/"); 
   out.value="connecting..." ;
-  ws.onopen=function(e){document.getElementById("connectBtn").value="connected";out.value="connected";queryForSym();} 
-  ws.onclose=function(e){out.value="disconnected";document.getElementById("connectBtn").value="connect";
-	var oldDropdown = document.getElementsByClassName('select-pure__select');
-	if (oldDropdown.length > 0){
-		oldDropdown[0].remove();
-	}
-  }
+  ws.onopen=function(e){out.value="connected";} 
   ws.onmessage=function(e){
 	  wsTmp=e.data;
 	  wsJsonObj=JSON.parse(wsTmp);
@@ -124,9 +118,10 @@ function connect()
 	  else if (wsJsonObj.func == "selectFromTrade"){parseForQTable(wsJsonObj.output);hide()}
 	  else {out.value=e.data;unHide()}
   }
-  ws.onerror=function(e){out.value=e.data;}
+  ws.onerror=function(e){console.log(e.data);}
  }else alert("WebSockets not supported on your browser.");
 }
+connect();
 function send()
 {x=document.getElementById("x");
  v=x.value;

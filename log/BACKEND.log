@@ -1,0 +1,6 @@
+INFO: BACKEND ## 2018.07.27D04:12:02.776809000 ## Connection closed: `dateTime`user`host`ipAddress`connection`handle`duration!(0Nz;`;`;();`;0Ni;0Nv) 
+INFO: BACKEND ## 2018.07.27D04:12:14.699372000 ## Connection opened: `dateTime`user`host`ipAddress`connection`handle`duration!(2018.07.27T04:12:14.699;`limguanyu_08_gmail_com;`localhost;"127.0.0.1";`opened;7i;0Nv) 
+INFO: BACKEND ## 2018.07.30D06:10:39.094213000 ## Connection closed: `dateTime`user`host`ipAddress`connection`handle`duration!(2018.07.27T04:12:14.699;`limguanyu_08_gmail_com;`localhost;"127.0.0.1";`closed;7i;68:29:38) 
+INFO: BACKEND ## 2018.07.30D06:12:24.095172000 ## Connection opened: `dateTime`user`host`ipAddress`connection`handle`duration!(2018.07.30T06:12:24.095;`limguanyu_08_gmail_com;`localhost;"127.0.0.1";`opened;7i;0Nv) 
+INFO: BACKEND ## 2018.07.30D06:13:03.001474000 ## Connection closed: `dateTime`user`host`ipAddress`connection`handle`duration!(2018.07.30T06:12:24.095;`limguanyu_08_gmail_com;`localhost;"127.0.0.1";`closed;7i;00:00:36) 
+INFO: BACKEND ## 2018.07.30D06:13:24.162492000 ## Connection opened: `dateTime`user`host`ipAddress`connection`handle`duration!(2018.07.30T06:13:24.162;`limguanyu_08_gmail_com;`localhost;"127.0.0.1";`opened;7i;0Nv) 

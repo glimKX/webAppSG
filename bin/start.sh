@@ -76,19 +76,19 @@ startTickerPlant()
 # Function: startRDB
 # Description: starts RDB
 ###########################################################
-startRDB()
+startBackend()
 {
 	printLines
-	info "Starting RDB"
+	info "Starting Backend"
 	printLines
-	info "Check for existing rdb"
-	if [[ -z $(ps -ef | grep "\.q" | grep rdb.q|grep -v grep) ]]
+	info "Check for existing Backend"
+	if [[ -z $(ps -ef | grep "\.q" | grep backend.q|grep -v grep) ]]
 	then
-        	info "No Existing RDB found"
-        	info "Starting RDB"
-        	bash rdb.sh 
+        	info "No Existing Backend found"
+        	info "Starting Backend"
+        	bash backend.sh 
 	else
-       		warn "Existing RDB found, not starting RDBs"
+       		warn "Existing Backend found, not starting Backend"
 	fi
 	return 0
 }
@@ -223,11 +223,7 @@ then
 	info "Starting ALL q processes for TickerPlant"
 	sourceQ
 	sourceConfig
-	startTickerPlant
-	startRDB
-	startFeed
-	startCEP
-	startHDB
+	startBackend
 	startGateway
 	info "Finish Starting ALL"
 elif [ "$1" = "tickerplant" ]
@@ -237,12 +233,12 @@ then
 	sourceConfig
 	startTickerPlant
 	info "Finish Starting TickerPlant"
-elif [ "$1" = "rdb" ]
+elif [ "$1" = "backend" ]
 then
-	info "Starting RDB Only"
+	info "Starting Backend Only"
 	sourceQ
 	sourceConfig
-	startRDB
+	startBackend
 	info "Finish Starting RDB"
 elif [ "$1" = "feed" ]
 then
