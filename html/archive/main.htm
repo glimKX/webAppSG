@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="css/selectPure.css">
+
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="Table_Fixed_Header/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="Table_Fixed_Header/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="Table_Fixed_Header/vendor/animate/animate.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="Table_Fixed_Header/vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="Table_Fixed_Header/vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="Table_Fixed_Header/css/util.css">
+	<link rel="stylesheet" type="text/css" href="Table_Fixed_Header/css/main.css">
+<!--===============================================================================================-->
+
+<style>
+textarea{
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+	}
+</style>
+<body>
+
+<!-- Navigation -->
+<nav class="w3-bar w3-black">
+  <a href="index.html" class="w3-button w3-bar-item">Logout</a>
+  <a class="w3-bar-item">Signed in as: </a>
+  <a class="w3-bar-item" name="username"></a>
+</nav>
+
+<!-- Slide Show -->
+<section>
+</section>
+<!-- Band Description -->
+<section class="w3-container w3-center w3-content" style="max-width:600px">
+  <h2 class="w3-wide">WebSocket</h2>
+  <p class="w3-opacity"><i>Tickerplant</i></p>
+ 	<form action="">
+		<input class="w3-border-grey" 	type="text"   		id="x" 			  placeholder="q)"       >
+		<input class="w3-btn w3-border-grey" type="submit"        value="send"      onclick="return send()">
+	</form>
+	<span class="sym"></span>
+</section>
+<section id="output">
+	<div class="limiter" id="tableContainer" style="display: none;">
+		<div class="container-table100">
+			<div class="wrap-table100">
+				<div class="table100 ver1 m-b-110">
+					<div class="table100-head">
+						<table>
+							<thead>
+								<tr class="row100 head">
+									<th class="cell100 column1">date</th>
+									<th class="cell100 column2">sym</th>
+									<th class="cell100 column3">time</th>
+									<th class="cell100 column4">size</th>
+									<th class="cell100 column5">price</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+					<div class="table100-body js-pscroll" id="tableBody">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<textarea id="out" rows=25 cols=70 display=block margin-left=auto margin-right=20px></textarea>
+</section>
+
+<section class="w3-row-padding w3-center w3-light-grey">
+	<p>Powered by 32bit Q kdb</p>
+  <article class="w3-third">
+  
+  </article>
+</section>
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-64 w3-center w3-black w3-xlarge">
+  <a href="#"><i class="fa fa-facebook-official"></i></a>
+  <a href="#"><i class="fa fa-pinterest-p"></i></a>
+  <a href="#"><i class="fa fa-twitter"></i></a>
+  <a href="#"><i class="fa fa-flickr"></i></a>
+  <a href="#"><i class="fa fa-linkedin"></i></a>
+  <p class="w3-medium">
+  Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a>
+  </p>
+</footer>
+
+<script src="./dist/bundle.min.js"></script>
+<script>
+var myIndex = 0;
+var out=document.getElementById("out");
+var sym;
+var wsTmp, wsJsonObj;
+var username=localStorage.getItem('user');
+var password=localStorage.getItem('pass');
+document.getElementsByName("username")[0].append(username);
+function connect()
+{if ("WebSocket" in window)
+ {var l = window.location;ws = new WebSocket("ws://" + username + ":" +  password + "@" + (l.hostname ? l.hostname : "localhost") + ":" + (l.port ? l.port : "5030") + "/"); 
+  out.value="connecting..." ;
+  ws.onopen=function(e){out.value="connected";} 
+  ws.onmessage=function(e){
+	  wsTmp=e.data;
+	  wsJsonObj=JSON.parse(wsTmp);
+	  if (wsJsonObj.func == "sourceForSym"){parseForSym(wsJsonObj.output)}
+	  else if (wsJsonObj.func == "selectFromTrade"){parseForQTable(wsJsonObj.output);hide()}
+	  else {out.value=e.data;unHide()}
+  }
+  ws.onerror=function(e){console.log(e.data);}
+ }else alert("WebSockets not supported on your browser.");
+}
+connect();
+function send()
+{x=document.getElementById("x");
+ v=x.value;
+ ws.send(v);
+ out.value="sent "+v;
+ return false;
+}
+function hide()
+{
+  var x = document.getElementById("out");
+  var y = document.getElementById("tableContainer");
+  x.style.display = "none";
+  y.style.display = "block";
+}
+function unHide()
+{
+  var x = document.getElementById("out");
+  var y = document.getElementById("tableContainer");
+  x.style.display = "block";
+  y.style.display = "none";
+}
+function queryForSym()
+{
+  query="sourceForSym[]";
+  ws.send(query);
+  return false;
+}
+function selectFromTrade(x)
+{
+  query="selectFromTrade[\"`"+x+"\"]";
+  ws.send(query);
+  return false;
+}
+function parseForSym(x)
+{
+ x=x.split(" ");
+ for (i in x){
+	 myOptions[i]={
+		 label:x[i],
+		 value:x[i],
+	 }
+ }
+ var oldDropdown = document.getElementsByClassName('select-pure__select');
+ if (oldDropdown.length > 0){
+	oldDropdown[0].remove();
+ }
+ var instance = new SelectPure(".sym",
+	{
+	options:myOptions,
+	onChange:value => {selectFromTrade(value); }
+	}
+ );
+}
+function parseForQTable(x)
+{
+  if (x.length > 0){
+  debug=x;
+  var columnNames = ["date","sym","time","size","price"];
+  /*use javascript to hide text box and show table
+  to incorporate css to make table nice*/
+	var div = document.getElementById('tableBody');
+	var table = document.createElement("table");
+	var tableBody = document.createElement("tbody");
+	if (div.hasChildNodes()) {
+		div.removeChild(div.childNodes[2]);	
+	}
+	for (var j = 0; j < x.length; j++){
+		var row = document.createElement("tr");
+		row.setAttribute('class','row100 body');
+		for (var i in columnNames){
+		var cell = document.createElement("td");
+		var cellText = document.createTextNode(x[j][columnNames[i]]);
+		cell.appendChild(cellText);
+		cell.setAttribute('class',"cell100 column" + (1+parseInt(i)));
+		row.appendChild(cell);
+		}
+		tableBody.appendChild(row);
+	}
+	table.appendChild(tableBody);
+	div.appendChild(table)
+  }
+}
+var myOptions = [];
+var debug;
+</script>
+
+<!--===============================================================================================-->	
+	<script src="Table_Fixed_Header/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="Table_Fixed_Header/vendor/bootstrap/js/popper.js"></script>
+	<script src="Table_Fixed_Header/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="Table_Fixed_Header/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="Table_Fixed_Header/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			var ps = new PerfectScrollbar(this);
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+		});
+			
+		
+	</script>
+<!--===============================================================================================-->
+	<script src="Table_Fixed_Header/js/main.js"></script>
+
+</body>
+</html>
