@@ -9,9 +9,12 @@ if[not "w"=first string .z.o;system "sleep 1"];
 / load logging capability
 system "l ",getenv[`SCRIPTS_DIR],"/log.q";
 
+/ load permissioning capability
+system "l ",getenv[`SCRIPTS_DIR],"/perm.q";
+
 / open handle to HDB and RDB
 /hdbHandle:hopen "J"$getenv `HDB_PORT;
-backEndHandle:hopen "J"$getenv `BACKEND_PORT;
+backEndHandle:hopen `$"::",getenv[`BACKEND_PORT],":",getenv[`ADMIN_USER],":",getenv[`ADMIN_PASS];
 
 /define .z.ws for websocket
 .z.ws:{neg[.z.w] .j.j @[{.log.out .Q.s1 x;value x};x;{.log.err .Q.s1[x],.Q.s1[y];`func`output!(`error;"failed to process ",x," due to ",y)}x]}

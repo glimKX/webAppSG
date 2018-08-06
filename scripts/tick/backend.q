@@ -8,3 +8,5 @@ if[not "w"=first string .z.o;system "sleep 1"];
 
 / load logging capability
 system "l ",getenv[`SCRIPTS_DIR],"/log.q";
+/ load permissioning capability
+system "l ",getenv[`SCRIPTS_DIR],"/perm.q";
