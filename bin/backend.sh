@@ -45,7 +45,7 @@ printLines()
 cd $SCRIPTS_DIR
 		info "Initialising CENTRAL BACKEND Process"
 		($q tick/backend.q -p $BACKEND_PORT > /dev/null 2>&1 &)
-#		$q tick/backend.q -p $BACKEND_PORT
+#		rlwrap $q tick/backend.q -p $BACKEND_PORT
 		sleep 2
 		if [[ ! -z $(ps -ef|grep $BACKEND_PORT|grep backend.q|grep -v bash) ]]
 		then 

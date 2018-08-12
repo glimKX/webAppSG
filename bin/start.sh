@@ -73,8 +73,8 @@ startTickerPlant()
 
 }
 ###########################################################
-# Function: startRDB
-# Description: starts RDB
+# Function: startBackend
+# Description: starts Backend
 ###########################################################
 startBackend()
 {
@@ -113,22 +113,22 @@ startFeed()
         return 0
 }
 ###########################################################
-# Function: startCEP
-# Description: starts CEP
+# Function: startTest
+# Description: starts Test
 ###########################################################
-startCEP()
+startTest()
 {
         printLines
-        info "Starting CEP"
+        info "Starting Test"
         printLines
-        info "Check for existing CEP"
-        if [[ -z $(ps -ef | grep "\.q" | grep cep.q|grep -v grep) ]]
+        info "Check for existing Test"
+        if [[ -z $(ps -ef | grep "\.q" | grep test.q|grep -v grep) ]]
         then
-                info "No Existing CEP found"
-                info "Starting CEP"
-                bash cep.sh 
+                info "No Existing Test found"
+                info "Starting Test"
+                bash test.sh 
         else
-                warn "Existing CEP found, not starting CEP"
+                warn "Existing Test found, not starting Test"
         fi
         return 0
 }
@@ -239,7 +239,7 @@ then
 	sourceQ
 	sourceConfig
 	startBackend
-	info "Finish Starting RDB"
+	info "Finish Starting Backend"
 elif [ "$1" = "feed" ]
 then
 	info "Starting FeedHandler Only"
@@ -247,13 +247,13 @@ then
 	sourceConfig
 	startFeed
 	info "Finish Starting FeedHandler"
-elif [ "$1" = "cep" ]
+elif [ "$1" = "test" ]
 then
-        info "Starting CEP Only"
+        info "Starting Test Only"
         sourceQ
 	sourceConfig
-        startCEP
-        info "Finish Starting CEP"
+        startTest
+        info "Finish Starting Test"
 elif [ "$1" = "hdb" ] 
 then
         info "Starting HDB Only"

@@ -63,7 +63,7 @@ shutdownAll()
 			do
 				info "Shutting down [$PID]"
 				ps -ef | grep -w $PID | grep -v grep	
-				kill $PID	
+				kill -9 $PID	
 			done
 		fi
 		return 0
@@ -95,23 +95,23 @@ shutdownTick()
         return 0
 }
 ###########################################################
-# Function: shutdownRDB
-# Description: shutdown RDB
+# Function: shutdown Backend
+# Description: shutdown Backend
 ###########################################################
-shutdownRDB()
+shutdownBackend()
 {
         printLines
-        info "Shutting down RDB Only"
+        info "Shutting down Test Only"
         printLines
-        info "Check for running RDB"
-        if [[ -z $(ps -ef | grep "\.q" | grep r.q|grep -v grep) ]]
+        info "Check for running Test"
+        if [[ -z $(ps -ef | grep "\.q" | grep backend.q|grep -v grep) ]]
         then
-			info "No running q process found"
+		info "No running q process found"
 	        info "Shutdown not required"
         	exit 0
         else
-			info "Found running q processes"
-	        for PID in $(ps -ef | grep "\.q" | grep r.q|grep -v grep | awk '{print $2}')
+		info "Found running q processes"
+	        for PID in $(ps -ef | grep "\.q" | grep backend.q|grep -v grep | awk '{print $2}')
 			do
 				info "Shutting down [$PID]"
 				ps -ef | grep -w $PID | grep -v grep
@@ -147,23 +147,23 @@ shutdownFeed()
         return 0
 }
 ###########################################################
-# Function: shutdown CEP
-# Description: shutdown CEP 
+# Function: shutdown Test
+# Description: shutdown Test 
 ###########################################################
-shutdownCEP()
+shutdownTest()
 {
         printLines
-        info "Shutting down CEP Only"
+        info "Shutting down Test Only"
         printLines
-        info "Check for running CEP"
-        if [[ -z $(ps -ef | grep "\.q" | grep cep.q|grep -v grep) ]]
+        info "Check for running Test"
+        if [[ -z $(ps -ef | grep "\.q" | grep test.q|grep -v grep) ]]
         then
                 info "No running q process found"
                 info "Shutdown not required"
                 exit 0
         else
                 info "Found running q processes"
-                for PID in $(ps -ef | grep "\.q" | grep cep.q|grep -v grep | awk '{print $2}')
+                for PID in $(ps -ef | grep "\.q" | grep test.q|grep -v grep | awk '{print $2}')
                         do
                                 info "Shutting down [$PID]" 
                                 ps -ef | grep -w $PID | grep -v grep 
@@ -231,18 +231,18 @@ elif [ "$1" = "tickerplant" ]
 then
         shutdownTick
         info "Finish Shutdown TickerPlant"
-elif [ "$1" = "rdb" ]
+elif [ "$1" = "backend" ]
 then
-        shutdownRDB
-        info "Finish Shutdown RDB"
+        shutdownBackend
+        info "Finish Shutdown Backend"
 elif [ "$1" = "feed" ]
 then
         shutdownFeed
         info "Finish Shutdown FeedHandler"
-elif [ "$1" = "cep" ]
+elif [ "$1" = "test" ]
 then
-        shutdownCEP
-        info "Finish Shutdown CEP"
+        shutdownTest
+        info "Finish Shutdown Test"
 elif [ "$1" = "hdb" ] 
 then
         shutdownHDB
