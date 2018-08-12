@@ -17,7 +17,7 @@ $(document).ready(function() {
     	if (ws == null){
 	  alert('Websocket handle is not found');
 	} else {
-	  ws.send(data);
+	  ws.send(JSON.stringify({func:"uploadCSV",args:data}));
 	}
     }
 
@@ -33,9 +33,9 @@ $(document).ready(function() {
             reader.onload = function(event) {
                 var csvData = event.target.result;
 		//should make data into dictionary, easy for KDB q
-                data = $.csv.toArrays(csvData);
+                data = $.csv.toObjects(csvData);
                 if (data && data.length > 0) {
-		  debug=data;
+//		  debug=data;
 		  sendCSV(data);
                   alert('Imported -' + data.length + '- rows successfully!');
                 } else {
