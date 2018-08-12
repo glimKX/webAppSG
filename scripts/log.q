@@ -32,11 +32,11 @@
 .log.cc:{[w] "Connection closed: ",.Q.s1 exec from .log.connections where handle = w};
 .log.co:{[w] "Connection opened: ",.Q.s1 exec from .log.connections where handle = w}; 
 
-.log.value:{@[{.log.out "User: ",string[.z.u]," ## Memory Usage: ",.Q.s1 .Q.w[];value x};x;{.log.err -1_.Q.s x;x}]};
+.log.value:{@[{.log.out "User: ",string[.z.u]," ## Running: ",.Q.s1 x;value x};x;{.log.err -1_.Q.s x;x}]};
 
 /adding logging message in evaluating ipc
-.z.pg:{$[10h=type x;.log.value x;first[x] like "*upd";value x;.log.value x]};
-.z.ps:{$[10h=type x;.log.value x;first[x] like "*upd";value x;.log.value x]};
+.z.pg:{.log.value x};
+.z.ps:{.log.value x};
 
 /shutdown function
 .log.shutdown:{.log.out "Shutdown Trigger from mainScript";exit 0};
