@@ -1,6 +1,6 @@
 var username=localStorage.getItem('user');
 var password=localStorage.getItem('pass');
-var wsTmp, wsJsonObj;
+var wsTmp, wsJsonObj,globalTable;
 
 //ipc functions
 function connect(username,password)
@@ -28,11 +28,13 @@ function parseAnswers()
 
 function parseTable(data){
 	var colNames = [];
+	var dataNames = [];
 	var singleRow=data[0];
-	for (var k in singleRow) colNames.push({"data":k});
-	$("#dataTable").DataTable({
+	for (var i=0;i<Object.keys(singleRow).length;i++) {var k =Object.keys(singleRow)[i]; colNames.push({"title":k,"targets":i}); dataNames.push({"data":k})};
+	globalTable=$("#dataTable").DataTable({
 		"data": data,
-		"columns": colNames
+		"columns": dataNames,
+		"columnDefs":colNames
 	});
 }
 
