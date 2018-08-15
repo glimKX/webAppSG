@@ -40,3 +40,7 @@
 
 /shutdown function
 .log.shutdown:{.log.out "Shutdown Trigger from mainScript";exit 0};
+
+
+//After delcaring, throw initialising message
+.log.out "Initialising ",string[.log.processName]," Process";
