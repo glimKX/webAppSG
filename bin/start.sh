@@ -225,6 +225,7 @@ then
 	sourceConfig
 	startBackend
 	startGateway
+	startTest
 	info "Finish Starting ALL"
 elif [ "$1" = "tickerplant" ]
 then
