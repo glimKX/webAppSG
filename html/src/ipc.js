@@ -6,12 +6,12 @@ var wsTmp, wsJsonObj,globalTable;
 function connect(username,password)
 {if ("WebSocket" in window)
  {var l = window.location;ws = new WebSocket("ws://" + username + ":" +  password + "@" + (l.hostname ? l.hostname : "localhost") + ":" + (l.port ? l.port : "5030") + "/"); 
-  ws.onopen=function(e){console.log("connected");$("#username").text(username)} 
+  ws.onopen=function(e){console.log("connected");$("#username").text(username);pullFromKDB(".backend.funQStory");pullFromKDB(".backend.leaderBoard")}
   ws.onmessage=function(e){
 	  wsTmp=e.data;
 	  wsJsonObj=JSON.parse(wsTmp);
-	  if (wsJsonObj.func == "sourceForSym"){parseForSym(wsJsonObj.output)}
-	  else if (wsJsonObj.func == "selectFromTrade"){parseForQTable(wsJsonObj.output);}
+	  if (wsJsonObj.func == ".gateway.pullFromKDB"){parseResult(wsJsonObj)}
+	  else if (wsJsonObj.func == ".gateway.pushToKDB"){displayPushStatus(wsJsonObj.output);}
 	  else {console.log(wsTmp);$("[class='card-text']").text(wsTmp)}
   }
   ws.onerror=function(e){console.log(e.data);}
@@ -38,10 +38,33 @@ function parseTable(data){
 	});
 }
 
+function displayPushStatus(data){
+	console.log(data);
+}
+
+function parseResult(data){
+	console.log(data);
+	if (data.arg==".backend.funQStory"){
+	  $("#funQStoryBoard").empty();
+  	  $("#funQStoryBoard").append($.parseHTML(data.output));
+	} else if (data.arg==".backend.leaderBoard"){
+	  parseTable(data.output);  
+	}
+}
+
+function qPushToClient(data){
+	//recv result from gateway when job has been completed
+	//sends both success or failures
+	//$("[class='card-text']").text(wsTmp)
+}
+
 //Events
 //send query from box to q console
 $("#sendBtn").click(function(){ws.send($("[aria-label='q-console']").val())});
 
 //main
-connect(username,password);
+$(document).ready(function(){
+  //When document loads, make connections and work
+  connect(username,password);
+});
 

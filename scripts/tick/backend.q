@@ -21,7 +21,13 @@ connect:{[w] `.backend.connections upsert con:(w".log.processName";w;`free);.log
 
 funQStory:();
 
-leaderBoard:`user xkey flip `rank`user`function`funcLength`overallSpeed!"JSCJZ"$\:();
+/table init
+leaderBoard:`user xkey flip `rank`user`function`funcLength`overallSpeed!"JS*JJ"$\:();
+jobs:`jobID xkey flip `jobID`user`handle`function`status`msg!"JSJ*S*"$\:();
+
+//init running jobID with function to extract it
+jobID:1;
+getJobID:{jobID:.backend.jobID;.test.jobID+:1;jobID};
 
 uploadTestCase:{[tab;csvFile] .log.out "In .backend.uploadTestCase -- proceeding to upload test cases";
 	h:exec handle from .backend.connections where processName like "*TEST*";
@@ -29,18 +35,25 @@ uploadTestCase:{[tab;csvFile] .log.out "In .backend.uploadTestCase -- proceeding
  };
 
 
-upd:{[tab;x] if[0>=x`timeTaken;tab upsert x]};
+upd:{[tab;x] if[0<=x`overallSpeed;tab upsert x]};
 
 val:{.log.out "In .backend.val";
 	h:exec first handle from .backend.connections where status=`free,processName like "*TEST*";
 	.log.out "Pushing to handle ",.Q.s h;
 	update status:`processing from `.backend.connections where handle=h;
-	neg[h](`.test.testFunction;x;h);
+	`.backend.jobs upsert `jobID`user`function`status`handle!(jobID:.backend.getJobID[];y;x;`sent;z);
+	.log.out "New Job received: ",.Q.s jobID;
+	neg[h](`.test.testFunction;x;h;jobID);
 	"Submitted test function please wait for results..."
  };
+
+sendResult:{};
 
 \d .
 
 .z.po:{.backend.connect[x]};
 
 / replay logic for connections and leaderBoard is needed
+
+//generic upd
+upd:{[tab;x] tab upsert x};

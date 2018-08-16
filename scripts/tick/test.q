@@ -21,7 +21,7 @@ backendHandle:@[
 	{.log.err "Failed to establish handle to ",.Q.s (x;y);0}getenv`BACKEND_PORT
  ];
 
-testFunction:{[f;handle] if[not count .test.TestCase;'No test case];
+testFunction:{[f;handle;jobID] if[not count .test.TestCase;'No test case];
 	//given that func is "{x+1}"
 	.log.out "Submission: ",.Q.s1(.z.u;f;handle);
 	.test.func:value f;
@@ -29,7 +29,7 @@ testFunction:{[f;handle] if[not count .test.TestCase;'No test case];
 	//TO-DO Exception handling for @' since this can fail
 	.log.out "Declared test function ",.Q.s .test.func;
 	.log.out "Declared test args ",.Q.s .test.args:exec testCase from .test.TestCase;
-	output:@[{.test.func @' x};.test.args;.test.logErrReset["Evaluation in output";handle]];
+	output:@[{.test.func @' x};.test.args;.test.logErrReset["Evaluation in output";handle;jobID]];
 	.log.out "Output is: ",.Q.s1 output;
 	if[0 = count output;:()];
 	correct:output=.test.TestCase`answer;
@@ -38,12 +38,17 @@ testFunction:{[f;handle] if[not count .test.TestCase;'No test case];
 	.log.out "Time Taken: ",.Q.s1 timeTaken;
 	neg[.test.backendHandle](`.backend.upd;`.backend.leaderBoard;`user`function`funcLength`overallSpeed!(.z.u;f;count f;timeTaken));
 	neg[.test.backendHandle]"update status:`free from `.backend.connections where handle=",string handle;
+	neg[.test.backendHandle](`upd;`.backend.jobs;`jobID`status`msg!(jobID;`completed;.Q.s correct));
+	//send output in a table to user so that he knows his result -TODO
+	//sends reminder to gateway to refresh leadership board to all connections - TODO
  };
 
-logErrReset:{.log.err x," --- due to: ",.Q.s[z];
-	neg[.test.backendHandle]"update status:`free from `.backend.connections where handle=",string y;
+logErrReset:{[msg;handle;jobID;err] .log.err msg," --- due to: ",.Q.s[err];
+	neg[.test.backendHandle]"update status:`free from `.backend.connections where handle=",string handle;
+	neg[.test.backendHandle](`upd;`.backend.jobs;`jobID`status`msg!(jobID;`failed;.Q.s[err]));
 	:()
  };
+
 
 //if backendHandle = 0; try to reconnect on a timer
 

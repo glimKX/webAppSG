@@ -5,12 +5,43 @@ function going(){
 	$("div[class*='mbr-arrow']").removeClass("d-none");
  }
 
+function pushToKDB(x,text){
+	if (ws == null){
+		alert('Websocket handle is not found');
+	} else {
+		var msg=JSON.stringify({func:".gateway.pushToKDB",args:{holder:x,item:text}});
+		ws.send(msg);
+	}
+ }
+
+function pullFromKDB(x){
+	if (ws == null){
+		alert('Websocket handle is not found');
+	} else {
+		var msg=JSON.stringify({func:".gateway.pullFromKDB",args:x});
+		ws.send(msg);
+	}
+ }
+
 //Event
 $("#joinBtn").click(function(){going()});
-$("#changeBtn").click(function(){$("form").toggle()});
+$("#changeBtn").click(function(){$("[class='form-group']").toggle()});
 $("#uploadBtn").click(function(){$("#dvImportSegments").toggle()});
 $(".dropdown-menu li a").click(function(){
   $("#dropdownMenuButton").text($(this).text());
 //  $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
 });
-//T
+$("button:contains('Submit Changes')").click(function(){
+  //Parse text area
+  var textBox=$("#exampleFormControlTextarea1").val().replace(/(\r\n|\n|\r)/gm, "<br />");
+  //Store into KDB
+  pushToKDB(".backend.funQStory",textBox);
+  //Reflect it on page, replace
+  $("#funQStoryBoard").empty();
+  $("#funQStoryBoard").append($.parseHTML(textBox));
+});
+$(document).ready(function(){
+  //When document loads, extract data from KDB
+});
+
+//Main

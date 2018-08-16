@@ -74,24 +74,27 @@
 	    <div class="card-header">
 	      funQ of the week
 	      </div>
-	      <div class="card-body" id="funQStoryBoard">
-		      <p>${Place_holder}</p>
-		      <form> 
-		        <div class="form-group">
+	      <div class="card-body">
+		      <h4>--Story--</h4>
+		      <div id="funQStoryBoard"></div>
+		      <div class="my-3"> 
+	      		<h5>--Admin Box--</h5>
+	      		<button class="btn btn-outline-secondary" type="button" id="changeBtn">Change Story</button>
+		        <div class="form-group" style="display:none">
 	       	          <label for="exampleFormControlTextarea1">Change Story</label>
 			  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+			  <button type="submit" class="btn btn-primary my-2">Submit Changes</button>
 			</div>
-			<button type="submit" class="btn btn-primary">Submit Changes</button>
-		      </form>
-	      <p></p>
-	      <button class="btn btn-outline-secondary" type="button" id="changeBtn">Change Story</button>
-	      <p></p>
-	      <button class="btn btn-outline-secondary" type="button" id="uploadBtn">Upload New Test Requirement</button>
-		      <div id="dvImportSegments" class="fileupload ">
-   		      <fieldset>
-        	      <legend>Upload your CSV File</legend>
-            	      <input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
-   		      </fieldset>
+		      </div>
+	      	      <p></p>
+	      	      <div>
+		        <button class="btn btn-outline-secondary" type="button" id="uploadBtn">Upload New Test Requirement</button>
+		        <div id="dvImportSegments" class="fileupload" style="display:none">
+   		          <fieldset>
+        	            <legend>Upload your CSV File</legend>
+            	            <input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
+   		          </fieldset>
+		        </div>
 		      </div>
 	      </div>
 	    </div>
@@ -210,10 +213,10 @@
     <script src="js/demo/chart-area-demo.js"></script>
 
     <!-- Module scripts-->
-    <script src="../src/ipc.js?1009"></script>
-    <script src="../src/webapp.js?1001"></script>
+    <script src="../src/ipc.js?1016"></script>
+    <script src="../src/webapp.js?1011"></script>
     <script src="../src/jquery.csv.js"></script>
-    <script src="../src/uploadCSV.js?1001"></script>
+    <script src="../src/uploadCSV.js?1002"></script>
   </body>
 
 </html>

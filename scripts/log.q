@@ -10,9 +10,11 @@
 /datetime username hostname ipaddress connection duration
 /collect data from .z.po
 .z.po:{[w] `.log.connections insert .z.Z,.z.u,(.Q.host .z.a;"." sv string "h"$0x0 vs .z.a),`opened,w,0Nv;.log.out .log.co w};
+.z.wo:{[w] `.log.connections insert .z.Z,.z.u,(.Q.host .z.a;"." sv string "h"$0x0 vs .z.a),`opened,w,0Nv;.log.out .log.co w};
 
 /when connection is closed, update connection to closed
 .z.pc:{[w] update connection:`closed,duration:"v"$80000*.z.Z-dateTime from `.log.connections where handle = w;.log.out .log.cc w};
+.z.wc:{[w] update connection:`closed,duration:"v"$80000*.z.Z-dateTime from `.log.connections where handle = w;.log.out .log.cc w};
 
 /need unique name for each log file
 .log.AllProcessName:{x:"=" vs' x;(!) . reverse flip @'[@'[@'[x;1;"J"$];0;-5_];0;"S"$]} system "grep -v \"#\" ", getenv[`CONFIG_DIR],"/port.config | awk '{print $2}'";

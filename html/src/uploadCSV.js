@@ -17,7 +17,7 @@ $(document).ready(function() {
     	if (ws == null){
 	  alert('Websocket handle is not found');
 	} else {
-	  ws.send(JSON.stringify({func:"uploadCSV",args:data}));
+	  ws.send(JSON.stringify({func:".gateway.uploadCSV",args:data}));
 	}
     }
 
