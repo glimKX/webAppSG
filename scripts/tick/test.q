@@ -21,18 +21,22 @@ backendHandle:@[
 	{.log.err "Failed to establish handle to ",.Q.s (x;y);0}getenv`BACKEND_PORT
  ];
 
+schema:([colName:`testCase`answer] type:("*";"*"));
+
 testFunction:{[f;handle;jobID] if[not count .test.TestCase;'No test case];
 	//given that func is "{x+1}"
 	.log.out "Submission: ",.Q.s1(.z.u;f;handle);
 	.test.func:value f;
+	.log.out "Adapting Schema to testCase";
+	testCase:@[{![.test.TestCase;();0b;x]};schemaCols!{($;first value schema x;x)}each schemaCols:(0!.test.schema)`colName;{.log.err "Fail to adapt schema", .Q.s[x];x}];
 	//assumes function takes one arg/one dictionary
 	//TO-DO Exception handling for @' since this can fail
 	.log.out "Declared test function ",.Q.s .test.func;
-	.log.out "Declared test args ",.Q.s .test.args:exec testCase from .test.TestCase;
+	.log.out "Declared test args ",.Q.s .test.args:exec testCase from testCase;
 	output:@[{.test.func @' x};.test.args;.test.logErrReset["Evaluation in output";handle;jobID]];
 	.log.out "Output is: ",.Q.s1 output;
 	if[0 = count output;:()];
-	correct:output=.test.TestCase`answer;
+	correct:output=testCase`answer;
 	.log.out "Correct boolean is ",.Q.s1 correct;
 	$[all correct;timeTaken:system "t:10000 .test.func@' .test.args";timeTaken:-1];
 	.log.out "Time Taken: ",.Q.s1 timeTaken;
@@ -49,6 +53,8 @@ logErrReset:{[msg;handle;jobID;err] .log.err msg," --- due to: ",.Q.s[err];
 	:()
  };
 
+//To Add logging function in upd for system resilience
+upd:{[t;x] t upsert x}
 
 //if backendHandle = 0; try to reconnect on a timer
 

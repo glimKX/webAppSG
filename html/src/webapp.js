@@ -27,6 +27,7 @@ function pullFromKDB(x){
 $("#joinBtn").click(function(){going()});
 $("#changeBtn").click(function(){$("[class='form-group']").toggle()});
 $("#uploadBtn").click(function(){$("#dvImportSegments").toggle()});
+$("#changeSchemaBtn").click(function(){$("[class='form-group my-1']").toggle()});
 $(".dropdown-menu li a").click(function(){
   $("#dropdownMenuButton").text($(this).text());
 //  $(this).parents(".dropdown").find('.btn').val($(this).data('value'));

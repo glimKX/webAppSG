@@ -26,7 +26,7 @@ system "l ",getenv[`SCRIPTS_DIR],"/log.q";
 / open handle to backend
 backEndHandle:hopen `$"::",getenv[`BACKEND_PORT],":",getenv[`ADMIN_USER],":",getenv[`ADMIN_PASS];
 
-uploadCSV:{testCase:update "J"$id, "J"$testCase, "J"$answer, "J"$iteration, "Z"$timer from x;`func`output!(`uploadCSV;.gateway.backEndHandle(`.backend.uploadTestCase;`.test.TestCase;testCase))}
+uploadCSV:{testCase:update "J"$id, "J"$iteration, "Z"$timer from x;`func`output!(`uploadCSV;.gateway.backEndHandle(`.backend.uploadTestCase;`.test.TestCase;testCase))}
 
 jobs:`jobID xkey flip `jobID`handle`status!"JJS"$\:();
 

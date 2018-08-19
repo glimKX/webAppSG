@@ -34,6 +34,10 @@ uploadTestCase:{[tab;csvFile] .log.out "In .backend.uploadTestCase -- proceeding
 	neg[h]@\:(set;tab;csvFile);
  };
 
+changeTestCaseSchema:{[column;ty] .log.out "In .backend.changeTestCaseSchema -- changing col: ",.Q.s[column]," schema: ",Q.s[ty];
+	h:exec handle from .backend.connections where processName like "*TEST*";
+	neg[h]@\:({.log.out "Changing schema".Q.s1 x;.test.upd[`.test.schema;x]};`colName`type!(column;ty));
+ };
 
 upd:{[tab;x] if[0<=x`overallSpeed;tab upsert x]};
 

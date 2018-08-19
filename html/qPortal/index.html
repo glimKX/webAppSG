@@ -43,6 +43,7 @@
       <ul class="navbar-nav ml-auto ml-md-0">
         <li class="nav-item dropdown no-arrow">
           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    <i class="fas" id="username"></i>	  
             <i class="fas fa-user-circle fa-fw"></i>
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
@@ -86,8 +87,7 @@
 			  <button type="submit" class="btn btn-primary my-2">Submit Changes</button>
 			</div>
 		      </div>
-	      	      <p></p>
-	      	      <div>
+	      	      <div class="my-3">
 		        <button class="btn btn-outline-secondary" type="button" id="uploadBtn">Upload New Test Requirement</button>
 		        <div id="dvImportSegments" class="fileupload" style="display:none">
    		          <fieldset>
@@ -95,6 +95,34 @@
             	            <input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
    		          </fieldset>
 		        </div>
+		      </div>
+		      <div class="my-3">
+			<button class="btn btn-outline-secondary" type="button" id="changeSchemaBtn">Change Evaluation Schema</button>
+			<div class="form-group my-1" style="display:none">
+			  <label class="py-0 my-0">Change Evaluation Schema</label>
+			  <div>
+			  <div class="btn px-0 my-1">
+  			  <button class="btn btn-secondary dropdown-toggle" type="button" id="changeArgSchema" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Change Argument Schema
+  			  </button>
+  			  <div class="dropdown-menu" aria-labelledby="changeArgSchema">
+    			    <a class="dropdown-item" >String</a>
+			    <a class="dropdown-item" >Symbol</a>
+			    <a class="dropdown-item" >Integer</a>
+  			  </div>
+  			  </div>
+			  <div class="btn px-0 my-1">
+                          <button class="btn btn-secondary dropdown-toggle" type="button" id="changeAnsSchema" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Change Answer Schema
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="changeAnsSchema">
+                            <a class="dropdown-item" >String</a>
+                            <a class="dropdown-item" >Symbol</a>
+                            <a class="dropdown-item" >Integer</a>
+                          </div>
+                          </div>
+			  </div>
+			</div>
 		      </div>
 	      </div>
 	    </div>
@@ -214,7 +242,7 @@
 
     <!-- Module scripts-->
     <script src="../src/ipc.js?1016"></script>
-    <script src="../src/webapp.js?1011"></script>
+    <script src="../src/webapp.js?1013"></script>
     <script src="../src/jquery.csv.js"></script>
     <script src="../src/uploadCSV.js?1002"></script>
   </body>
