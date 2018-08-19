@@ -34,9 +34,9 @@ uploadTestCase:{[tab;csvFile] .log.out "In .backend.uploadTestCase -- proceeding
 	neg[h]@\:(set;tab;csvFile);
  };
 
-changeTestCaseSchema:{[column;ty] .log.out "In .backend.changeTestCaseSchema -- changing col: ",.Q.s[column]," schema: ",Q.s[ty];
+changeTestCaseSchema:{[column;ty] .log.out "In .backend.changeTestCaseSchema -- changing col: ",.Q.s[column]," schema: ",.Q.s[ty];
 	h:exec handle from .backend.connections where processName like "*TEST*";
-	neg[h]@\:({.log.out "Changing schema".Q.s1 x;.test.upd[`.test.schema;x]};`colName`type!(column;ty));
+	neg[h]@\:({.log.out "Changing schema".Q.s1 x;.test.upd[`.test.schema;x]};`colName`ty!(column;first ty));
  };
 
 upd:{[tab;x] if[0<=x`overallSpeed;tab upsert x]};
@@ -51,7 +51,12 @@ val:{.log.out "In .backend.val";
 	"Submitted test function please wait for results..."
  };
 
-sendResult:{};
+sendResult:{[res;jobID]
+	.log.out "In .backend.sendResult ",.Q.s1 `res`jobID!(res;jobID);
+	res:flip res;
+	h:first exec handle from .backend.connections where processName like "GATEWAY";
+	neg[h](`.gateway.sendResult;res;jobID);
+ };
 
 \d .
 

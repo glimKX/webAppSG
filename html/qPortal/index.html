@@ -106,9 +106,9 @@
     Change Argument Schema
   			  </button>
   			  <div class="dropdown-menu" aria-labelledby="changeArgSchema">
-    			    <a class="dropdown-item" >String</a>
-			    <a class="dropdown-item" >Symbol</a>
-			    <a class="dropdown-item" >Integer</a>
+    			    <a class="dropdown-item" value="*">String</a>
+			    <a class="dropdown-item" value="S">Symbol</a>
+			    <a class="dropdown-item" value="J">Integer</a>
   			  </div>
   			  </div>
 			  <div class="btn px-0 my-1">
@@ -116,9 +116,9 @@
     Change Answer Schema
                           </button>
                           <div class="dropdown-menu" aria-labelledby="changeAnsSchema">
-                            <a class="dropdown-item" >String</a>
-                            <a class="dropdown-item" >Symbol</a>
-                            <a class="dropdown-item" >Integer</a>
+			    <a class="dropdown-item" value="*">String</a>
+                            <a class="dropdown-item" value="S">Symbol</a>
+                            <a class="dropdown-item" value="J">Integer</a>
                           </div>
                           </div>
 			  </div>
@@ -145,6 +145,10 @@
 		<div class="card-body border">
 		  <h5 class="card-title">Q output</h5>
 		  <p class="card-text"></p>
+		  <div class="table-responsive">
+                    <table class="table table-bordered" id="qOutput" width="100%" cellspacing="0">
+                    </table>
+                  </div>
 		</div>
       	      </div>
     	    </div>
@@ -241,8 +245,8 @@
     <script src="js/demo/chart-area-demo.js"></script>
 
     <!-- Module scripts-->
-    <script src="../src/ipc.js?1016"></script>
-    <script src="../src/webapp.js?1013"></script>
+    <script src="../src/ipc.js?1018"></script>
+    <script src="../src/webapp.js?1015"></script>
     <script src="../src/jquery.csv.js"></script>
     <script src="../src/uploadCSV.js?1002"></script>
   </body>

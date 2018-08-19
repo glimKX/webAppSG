@@ -26,7 +26,13 @@ system "l ",getenv[`SCRIPTS_DIR],"/log.q";
 / open handle to backend
 backEndHandle:hopen `$"::",getenv[`BACKEND_PORT],":",getenv[`ADMIN_USER],":",getenv[`ADMIN_PASS];
 
-uploadCSV:{testCase:update "J"$id, "J"$iteration, "Z"$timer from x;`func`output!(`uploadCSV;.gateway.backEndHandle(`.backend.uploadTestCase;`.test.TestCase;testCase))}
+uploadCSV:{testCase:update "J"$id, "J"$iteration, "Z"$timer from x;`func`output!(`.gateway.uploadCSV;.gateway.backEndHandle(`.backend.uploadTestCase;`.test.TestCase;testCase))}
+
+changeSchema:{.log.out "In .gateway.changeSchema -- Received new schema change request ",.Q.s1 x;
+	colName:`$x`colName;
+	ty:x`type;
+	`func`output!(`.gateway.changeSchema;.gateway.backEndHandle(`.backend.changeTestCaseSchema;colName;ty))
+ }
 
 jobs:`jobID xkey flip `jobID`handle`status!"JJS"$\:();
 
@@ -55,6 +61,10 @@ pullFromKDB:{
  };
 
 // function to send back result to client
-sendResult:{[res;jobID]};
+sendResult:{[res;jobID] .log.out "In .gateway.sendResult -- sending result back to client";
+	h:neg first exec handle from .gateway.jobs where jobID=jobID;
+	.log.out "Sending to handle ",.Q.s[h];
+	h .j.j `func`output!(`.gateway.sendResult;res);
+ };
 
-\d
+\d .

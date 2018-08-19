@@ -1,6 +1,6 @@
 var username=localStorage.getItem('user');
 var password=localStorage.getItem('pass');
-var wsTmp, wsJsonObj,globalTable;
+var wsTmp, wsJsonObj,globalTable,qOutput;
 
 //ipc functions
 function connect(username,password)
@@ -12,6 +12,7 @@ function connect(username,password)
 	  wsJsonObj=JSON.parse(wsTmp);
 	  if (wsJsonObj.func == ".gateway.pullFromKDB"){parseResult(wsJsonObj)}
 	  else if (wsJsonObj.func == ".gateway.pushToKDB"){displayPushStatus(wsJsonObj.output);}
+	  else if (wsJsonObj.func == ".gateway.sendResult"){qPushToClient(wsJsonObj.output);}
 	  else {console.log(wsTmp);$("[class='card-text']").text(wsTmp)}
   }
   ws.onerror=function(e){console.log(e.data);}
@@ -27,6 +28,7 @@ function parseAnswers()
 }
 
 function parseTable(data){
+	if (globalTable != null){globalTable.destroy();$("#dataTable").empty()}
 	var colNames = [];
 	var dataNames = [];
 	var singleRow=data[0];
@@ -56,6 +58,17 @@ function qPushToClient(data){
 	//recv result from gateway when job has been completed
 	//sends both success or failures
 	//$("[class='card-text']").text(wsTmp)
+	console.log(data);
+	if (qOutput != null){qOutput.destroy();$("#qOutput").empty()}
+	var colNames = [];
+        var dataNames = [];
+        var singleRow=data[0];
+        for (var i=0;i<Object.keys(singleRow).length;i++) {var k =Object.keys(singleRow)[i]; colNames.push({"title":k,"targets":i}); dataNames.push({"data":k})};
+        qOutput=$("#qOutput").DataTable({
+                "data": data,
+                "columns": dataNames,
+                "columnDefs":colNames
+        });
 }
 
 //Events

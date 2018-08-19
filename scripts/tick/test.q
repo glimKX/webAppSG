@@ -21,7 +21,7 @@ backendHandle:@[
 	{.log.err "Failed to establish handle to ",.Q.s (x;y);0}getenv`BACKEND_PORT
  ];
 
-schema:([colName:`testCase`answer] type:("*";"*"));
+schema:([colName:`testCase`answer] ty:("*";"*"));
 
 testFunction:{[f;handle;jobID] if[not count .test.TestCase;'No test case];
 	//given that func is "{x+1}"
@@ -44,6 +44,9 @@ testFunction:{[f;handle;jobID] if[not count .test.TestCase;'No test case];
 	neg[.test.backendHandle]"update status:`free from `.backend.connections where handle=",string handle;
 	neg[.test.backendHandle](`upd;`.backend.jobs;`jobID`status`msg!(jobID;`completed;.Q.s correct));
 	//send output in a table to user so that he knows his result -TODO
+	res:`testCase`answer`output`correct!(.test.args;testCase`answer;output;correct);
+	.log.out "Compiled output for client ",.Q.s1 res;
+	neg[.test.backendHandle](`.backend.sendResult;res;jobID);
 	//sends reminder to gateway to refresh leadership board to all connections - TODO
  };
 

@@ -23,11 +23,22 @@ function pullFromKDB(x){
 	}
  }
 
+function changeSchema(colName,type){
+	if (ws == null){
+                alert('Websocket handle is not found');
+        } else {
+                var msg=JSON.stringify({func:".gateway.changeSchema",args:{colName:colName,type:type}});
+                ws.send(msg);
+        }
+ }
+
 //Event
 $("#joinBtn").click(function(){going()});
 $("#changeBtn").click(function(){$("[class='form-group']").toggle()});
 $("#uploadBtn").click(function(){$("#dvImportSegments").toggle()});
 $("#changeSchemaBtn").click(function(){$("[class='form-group my-1']").toggle()});
+$("[aria-labelledby='changeArgSchema'] > a").click(function(){var type=$(this).attr("value");changeSchema("testCase",type)});
+$("[aria-labelledby='changeAnsSchema'] > a").click(function(){var type=$(this).attr("value");changeSchema("answer",type)});
 $(".dropdown-menu li a").click(function(){
   $("#dropdownMenuButton").text($(this).text());
 //  $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
