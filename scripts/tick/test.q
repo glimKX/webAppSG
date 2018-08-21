@@ -23,7 +23,7 @@ backendHandle:@[
 
 schema:([colName:`testCase`answer] ty:("*";"*"));
 
-testFunction:{[f;handle;jobID] if[not count .test.TestCase;'No test case];
+testFunction:{[user;f;handle;jobID] if[not count .test.TestCase;'No test case];
 	//given that func is "{x+1}"
 	.log.out "Submission: ",.Q.s1(.z.u;f;handle);
 	.test.func:value f;
@@ -40,7 +40,7 @@ testFunction:{[f;handle;jobID] if[not count .test.TestCase;'No test case];
 	.log.out "Correct boolean is ",.Q.s1 correct;
 	$[all correct;timeTaken:system "t:10000 .test.func@' .test.args";timeTaken:-1];
 	.log.out "Time Taken: ",.Q.s1 timeTaken;
-	neg[.test.backendHandle](`.backend.upd;`.backend.leaderBoard;`user`function`funcLength`overallSpeed!(.z.u;f;count f;timeTaken));
+	neg[.test.backendHandle](`.backend.upd;`.backend.leaderBoard;`user`function`funcLength`overallSpeed!(user;f;count f;timeTaken));
 	neg[.test.backendHandle]"update status:`free from `.backend.connections where handle=",string handle;
 	neg[.test.backendHandle](`upd;`.backend.jobs;`jobID`status`msg!(jobID;`completed;.Q.s correct));
 	//send output in a table to user so that he knows his result -TODO

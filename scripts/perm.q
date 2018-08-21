@@ -35,7 +35,8 @@ delete users, Apermissions from `.;
 / When we need to introduce additional users, we need to modify the if-else condition in the .z.pg below
 / Not sure if we have to do the same for async queries, but doubt thats needed since q doesnt return "an argument" back if its asynchronous, and we wont have any async callback functions
 / What is passed into .z.pg is actually string format
-.z.pg: {[query] user: .z.u;
+.z.pg: {[query]	user: .z.u;
+		.log.out "Running ",.Q.s[query]," as ",.Q.s[user];
 		class: .perm.getClass[user];
 		$[class ~ `superuser; value query; .perm.pg.user[user;query]]};
 

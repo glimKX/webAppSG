@@ -10,7 +10,7 @@ if[not "w"=first string .z.o;system "sleep 1"];
 system "l ",getenv[`SCRIPTS_DIR],"/log.q";
 
 / load permissioning capability
-//system "l ",getenv[`SCRIPTS_DIR],"/perm.q";
+system "l ",getenv[`SCRIPTS_DIR],"/perm.q";
 
 /define .z.ws for websocket
 /TO-DO, put requests into a list so that gateway can be free while waiting for answer
@@ -45,7 +45,7 @@ newJob:{[func;user;handle]
 	.log.out "In .gateway.newJob -- Received new job " , .Q.s1 `jobID`func`handle!(jobID:.gateway.getJobID[];func;handle);
 	`.gateway.jobs upsert `jobID`handle`status!(jobID;handle;`received);
 	.log.out "Pushing to backend";
-	@[.gateway.backEndHandle;(`.backend.val;func;user;handle);{.log.err .Q.s1[x],.Q.s1[y];`func`output!(`error;"failed to process ",x," due to ",y)}.Q.s1 (`.backend.val;func;user;handle)]
+	@[.gateway.backEndHandle;(`.backend.val;func;user;handle;jobID);{.log.err .Q.s1[x],.Q.s1[y];`func`output!(`error;"failed to process ",x," due to ",y)}.Q.s1 (`.backend.val;func;user;handle;jobID)]
  };
 
 pushToKDB:{
@@ -68,3 +68,7 @@ sendResult:{[res;jobID] .log.out "In .gateway.sendResult -- sending result back 
  };
 
 \d .
+
+/ force backend to open handle back at gateway
+neg[.gateway.backEndHandle](`.backend.forceConnect;`);
+
