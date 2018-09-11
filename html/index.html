@@ -88,7 +88,7 @@
 			document.getElementsByClassName("isa_error")[0].style.display="none";
 			if ("WebSocket" in window){
 				var l = window.location;ws = new WebSocket("ws://" + username + ":" +  password + "@" + (l.hostname ? l.hostname : "localhost") + ":" + (l.port ? l.port : "5030") + "/");
-				ws.onopen=function(e){localStorage.setItem("user",username);localStorage.setItem("pass",password);ws.close();window.location.href = "main.html"}
+				ws.onopen=function(e){localStorage.setItem("user",username);localStorage.setItem("pass",password);ws.close();window.location.href = "qPortal"}
 				ws.onclose=function(e){}
   				ws.onmessage=function(e){
 					wsTmp=e.data;

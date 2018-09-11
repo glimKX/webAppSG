@@ -60,9 +60,16 @@ pullFromKDB:{
 	`func`output`arg!(`.gateway.pullFromKDB;res;x)
  };
 
+refresh:{
+	.log.out "Entered Refresh to clients";
+	h:exec handle from .log.connections where host<>`localhost,connection =`opened;
+	if[count h;neg[h]@\: .j.j pullFromKDB ".backend.leaderBoard"];
+ };
+
 // function to send back result to client
-sendResult:{[res;jobID] .log.out "In .gateway.sendResult -- sending result back to client";
-	h:neg first exec handle from .gateway.jobs where jobID=jobID;
+sendResult:{[res;ID] .log.out "In .gateway.sendResult -- sending result back to client for jobID ",.Q.s[ID];
+	.debug.jobID:ID;
+	h:neg first exec handle from .gateway.jobs where jobID=ID;
 	.log.out "Sending to handle ",.Q.s[h];
 	h .j.j `func`output!(`.gateway.sendResult;res);
  };

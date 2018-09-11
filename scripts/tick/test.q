@@ -28,7 +28,7 @@ testFunction:{[user;f;handle;jobID] if[not count .test.TestCase;'No test case];
 	.log.out "Submission: ",.Q.s1(.z.u;f;handle);
 	.test.func:value f;
 	.log.out "Adapting Schema to testCase";
-	testCase:@[{![.test.TestCase;();0b;x]};schemaCols!{($;first value schema x;x)}each schemaCols:(0!.test.schema)`colName;{.log.err "Fail to adapt schema", .Q.s[x];x}];
+	testCase:@[{![.test.TestCase;();0b;x]};schemaCols!{(each;value;x)}each schemaCols:(exec colName from .test.schema where ty<>"*");{.log.err "Fail to adapt schema", .Q.s[x];x}];
 	//assumes function takes one arg/one dictionary
 	//TO-DO Exception handling for @' since this can fail
 	.log.out "Declared test function ",.Q.s .test.func;
@@ -36,23 +36,35 @@ testFunction:{[user;f;handle;jobID] if[not count .test.TestCase;'No test case];
 	output:@[{.test.func @' x};.test.args;.test.logErrReset["Evaluation in output";handle;jobID]];
 	.log.out "Output is: ",.Q.s1 output;
 	if[0 = count output;:()];
-	correct:output=testCase`answer;
+	$[1<count first ans:testCase`answer;
+		correct:.[{x~'y};(output;ans);.test.logErrReset["Comparison in output";handle;jobID]];	
+		correct:.[{x=y};(output;ans);.test.logErrReset["Comparison in output";handle;jobID]]
+	 ];
+	//prevent string from crashing system needs long term fix might not be needed with booleanTrap below
+	//if[0h=type output;correct:raze correct];
+	//logic is needed here to allow string comparison
+	//logic is needed to throw type error back at user
 	.log.out "Correct boolean is ",.Q.s1 correct;
-	$[all correct;timeTaken:system "t:10000 .test.func@' .test.args";timeTaken:-1];
+	if[0 = count correct;:()];
+	c:@[{all x};correct;{.test.logErrReset["All Correct Error";x;y;z];:()}[handle;jobID]];
+	if[-1h<>type c;.test.logErrReset["All Correct Error";handle;jobID;`booleanErr];'booleanErr];
+	$[c;timeTaken:system "t:10000 .test.func@' .test.args";timeTaken:-1];
 	.log.out "Time Taken: ",.Q.s1 timeTaken;
 	neg[.test.backendHandle](`.backend.upd;`.backend.leaderBoard;`user`function`funcLength`overallSpeed!(user;f;count f;timeTaken));
 	neg[.test.backendHandle]"update status:`free from `.backend.connections where handle=",string handle;
 	neg[.test.backendHandle](`upd;`.backend.jobs;`jobID`status`msg!(jobID;`completed;.Q.s correct));
-	//send output in a table to user so that he knows his result -TODO
 	res:`testCase`answer`output`correct!(.test.args;testCase`answer;output;correct);
 	.log.out "Compiled output for client ",.Q.s1 res;
 	neg[.test.backendHandle](`.backend.sendResult;res;jobID);
-	//sends reminder to gateway to refresh leadership board to all connections - TODO
+	//sends reminder to gateway to refresh leadership board to all connections
+	neg[.test.backendHandle](`.backend.refresh;`);
  };
 
 logErrReset:{[msg;handle;jobID;err] .log.err msg," --- due to: ",.Q.s[err];
 	neg[.test.backendHandle]"update status:`free from `.backend.connections where handle=",string handle;
 	neg[.test.backendHandle](`upd;`.backend.jobs;`jobID`status`msg!(jobID;`failed;.Q.s[err]));
+	neg[.test.backendHandle](`.backend.sendResult;enlist[`error]!enlist .Q.s err;jobID);
+	//send error back to user
 	:()
  };
 

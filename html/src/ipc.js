@@ -12,6 +12,8 @@ function connect(username,password)
 	  wsJsonObj=JSON.parse(wsTmp);
 	  if (wsJsonObj.func == ".gateway.pullFromKDB"){parseResult(wsJsonObj)}
 	  else if (wsJsonObj.func == ".gateway.pushToKDB"){displayPushStatus(wsJsonObj.output);}
+	  else if (wsJsonObj.func == ".gateway.changeSchema"){changeSchemaStatus(wsJsonObj.output);}
+	  else if (wsJsonObj.func == ".gateway.uploadCSV"){if(wsJsonObj.output==null){alert("Uploaded new CSV to Backend")};}
 	  else if (wsJsonObj.func == ".gateway.sendResult"){qPushToClient(wsJsonObj.output);}
 	  else {console.log(wsTmp);$("[class='card-text']").text(wsTmp)}
   }
@@ -44,13 +46,20 @@ function displayPushStatus(data){
 	console.log(data);
 }
 
+function changeSchemaStatus(data){
+	if (data == null){alert("Schema Changed")}
+	else {alert("Error: "+data)}
+}
+
 function parseResult(data){
 	console.log(data);
 	if (data.arg==".backend.funQStory"){
 	  $("#funQStoryBoard").empty();
   	  $("#funQStoryBoard").append($.parseHTML(data.output));
 	} else if (data.arg==".backend.leaderBoard"){
-	  parseTable(data.output);  
+	  parseTable(data.output); 
+	  var d = new Date();	
+	  $(".card-footer").text("Updated: "+String(d));
 	}
 }
 

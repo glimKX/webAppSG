@@ -53,9 +53,14 @@ val:{[func;user;handle;jobID]
 
 sendResult:{[res;jobID]
 	.log.out "In .backend.sendResult ",.Q.s1 `res`jobID!(res;jobID);
-	res:flip res;
+	$[1=count res;res:enlist res;res:flip res];
 	h:first exec handle from .backend.connections where processName like "GATEWAY";
 	neg[h](`.gateway.sendResult;res;jobID);
+ };
+
+refresh:{
+	.log.out "Forcing all connections to refresh leaderboard";
+	neg[.backend.gatewayHandle](`.gateway.refresh;`);
  };
 
 \d .
