@@ -37,7 +37,7 @@ connect:{[w]
 	`.backend.connections upsert con:(w".log.processName";w;`free);
 	.log.out "Connection established ",.Q.s1 con;
 	if[(con 0) like "TEST*";
-		.hb.addHB[con 0;w;2];
+		.hb.addHB[con 0;w;1];
 		.backend.failRequest con 0;
 	]
  };
@@ -72,14 +72,14 @@ val:{[func;user;handle;jobID]
 		.log.out "No free test process";
 		`.backend.jobs upsert `jobID`user`function`status`handle!(jobID;user;func;`queued;handle);
 		neg[.z.w](`.gateway.queue;jobID);
-		:"Submitted test function, no free process currently"
+		:"Submitted test function, no free process currently. Please remain connected"
 	];
 	.log.out "Pushing to handle ",.Q.s h;
 	update status:`processing from `.backend.connections where handle=h;
 	processName:exec first processName from .backend.connections where handle=h;
 	`.backend.jobs upsert `jobID`processName`user`function`status`handle!(jobID;processName;user;func;`sent;handle);
 	.log.out "New Job received: ",.Q.s jobID;
-	neg[h](`.test.testFunction;user;func;handle;jobID);
+	neg[h](`.test.testFunction;user;func;h;jobID);
 	"Submitted test function please wait for results..."
  };
 
@@ -97,8 +97,9 @@ valReplay:{[dict]
         ];
 	.log.out "Pushing to handle ",.Q.s h;
         update status:`processing from `.backend.connections where handle=h;
-        `.backend.jobs upsert `jobID`status!(jobID;`sent);
-	neg[h](`.test.testFunction;user;func;handle;jobID);
+	pName:exec first processName from .backend.connections where handle=h;
+        `.backend.jobs upsert `jobID`status`processName!(jobID;`sent;pName);
+	neg[h](`.test.testFunction;user;func;h;jobID);
  };
 
 replayQueue:{.log.out "Replaying queued jobs";
@@ -131,7 +132,10 @@ failRequest:{[pName]
  };
 \d .
 
-.z.po:{.backend.connect[x]};
+prepo:.z.po;
+.z.po:{prepo[x];.backend.connect[x]};
+prepc:.z.pc;
+.z.pc:{prepc[x];.hb.findProcesses[]};
 
 / replay logic for connections and leaderBoard is needed
 
