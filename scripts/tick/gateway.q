@@ -48,6 +48,14 @@ newJob:{[func;user;handle]
 	@[.gateway.backEndHandle;(`.backend.val;func;user;handle;jobID);{.log.err .Q.s1[x],.Q.s1[y];`func`output!(`error;"failed to process ",x," due to ",y)}.Q.s1 (`.backend.val;func;user;handle;jobID)]
  };
 
+queue:{[ID]
+	.log.out "In .gateway.queue -- Received queue status for jobID " , .Q.s1 ID;
+	h:neg first exec handle from .gateway.jobs where jobID=ID;
+	.log.out "Sending to handle ",.Q.s[h]," that job is queuing for free process";
+	h .j.j "Your job is currently queued, please remain connected to receive outcome";
+ };
+	
+
 pushToKDB:{
 	.log.out "Pushing to backend: ",.Q.s1 x;
 	res:@[.gateway.backEndHandle;(set;`$x`holder;x`item);{.log.err "Unable to set ",.Q.s1[x], "due to ",.Q.s1[y];y}(set;`$x`holder;x`item)];

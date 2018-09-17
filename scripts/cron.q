@@ -14,9 +14,9 @@ runJob:{.log.out "Running cronJob --- ",.Q.s1 (x`function;x`args);
 		@[{x[0] @ x[1]};(x`function;x`args);{.log.err "Unable to run cronJob due to ",.Q.s x}];
 		@[{x[0] . x[1]};(x`function;x`args);{.log.err "Unable to run cronJob due to ",.Q.s x}]
 	];
-	update stime:stime+freq from `.cron.jobs where function = x`function;
+	update stime:.z.Z+freq from `.cron.jobs where function = x`function;
 	if[first exec stime>etime from .cron.jobs where function = x`function;
-		.log.out .Q.s[x`function]," Function has stime>etime, no longer needed";
+		.log.out .Q.s1[x`function]," Function has stime>etime, no longer needed";
 		.cron.removeJob x`function;
 	];
 	.log.out "Finished running cronJob";
@@ -25,6 +25,7 @@ runJob:{.log.out "Running cronJob --- ",.Q.s1 (x`function;x`args);
 /define analytics to add job to cron
 addJob:{[function;freq;args;stime;etime;enabled]
 	//freq is in terms of day
+	if[stime=-0wz;stime:.z.Z];
 	.log.out "Adding cronJob --- ",.Q.s1 `function`args`freq`stime`etime`enabled!(function;args;freq;stime;etime;enabled);
 	@[{`.cron.jobs upsert x};
 		`function`args`freq`stime`etime`enabled!(function;args;freq;stime;etime;enabled);
@@ -43,6 +44,7 @@ switchJob:{[func]
 	.log.out "Switch cronJob --- ",.Q.s1 func;
 	//protected eval
 	update not enabled from `.cron.jobs where function = func;
+	-1 .Q.s1[func]," was switched off";
  }
 
 /define analytic to find jobs to run

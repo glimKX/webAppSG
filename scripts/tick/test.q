@@ -9,17 +9,26 @@ if[not "w"=first string .z.o;system "sleep 1"];
 / load logging capability
 system "l ",getenv[`SCRIPTS_DIR],"/log.q";
 
+/ load cron as it is a dependency for heartbeat
+system "l ",getenv[`SCRIPTS_DIR],"/cron.q";
+
+/ load heartbeat script to reply
+system "l ",getenv[`SCRIPTS_DIR],"/heartbeat.q";
+
 /test functions
 
 \d .test
 
-backendHandle:@[
-	{h:hopen `$":",":" sv ("localhost";x;getenv[`ADMIN_USER];getenv[`ADMIN_PASS]);
-		.log.out "Handle to backend established ",.Q.s h;
-		h};
-	getenv `BACKEND_PORT;
-	{.log.err "Failed to establish handle to ",.Q.s (x;y);0}getenv`BACKEND_PORT
- ];
+logFile:hsym`$getenv[`TESTLOG_DIR],"/TEST";
+
+
+/backendHandle:@[
+/	{h:hopen `$":",":" sv ("localhost";x;getenv[`ADMIN_USER];getenv[`ADMIN_PASS]);
+/		.log.out "Handle to backend established ",.Q.s h;
+/		h};
+/	getenv `BACKEND_PORT;
+/	{.log.err "Failed to establish handle to ",.Q.s (x;y);0}getenv`BACKEND_PORT
+/ ];
 
 schema:([colName:`testCase`answer] ty:("*";"*"));
 
@@ -73,6 +82,15 @@ upd:{[t;x] t upsert x}
 
 //if backendHandle = 0; try to reconnect on a timer
 
+@[{-11!x};logFile;{.log.err "Unable to replay logfile ",.Q.s x}];
+
+backendHandle:@[
+	{h:hopen `$":",":" sv ("localhost";x;getenv[`ADMIN_USER];getenv[`ADMIN_PASS]);
+		.log.out "Handle to backend established ",.Q.s h;
+		h};
+	getenv `BACKEND_PORT;
+	{.log.err "Failed to establish handle to ",.Q.s (x;y);0}getenv`BACKEND_PORT
+ ];
 
 \d .
 

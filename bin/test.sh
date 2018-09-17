@@ -36,7 +36,7 @@ printLines()
 ###########################################################
 cd $SCRIPTS_DIR 
 info "Initialising TEST Process and subscribing to Backend"
-($q tick/test.q -p $TEST1_PORT > /dev/null 2>&1 &)
+($q tick/test.q -w 200 -p $TEST1_PORT > /dev/null 2>&1 &)
 #rlwrap $q tick/test.q -p $TEST1_PORT
 sleep 2
 if [[ ! -z $(ps -ef|grep $TEST1_PORT |grep -v grep|grep -v bash) ]]
@@ -46,7 +46,7 @@ else
 	err "TEST1 failed to start"
 fi
 
-($q tick/test.q -p $TEST2_PORT > /dev/null 2>&1 &)
+($q tick/test.q -w 200 -p $TEST2_PORT > /dev/null 2>&1 &)
 sleep 2
 if [[ ! -z $(ps -ef|grep $TEST2_PORT |grep -v grep|grep -v bash) ]]
 then
