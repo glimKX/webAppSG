@@ -38,11 +38,11 @@ scripts
 
 Set up configurations and q
 run ./main.sh
-
+```
 1 to start processes, use 1 for the right workflow
 2 to shutdown processes, use 1 to just kill all, specific number for testing purpose
 3 to display processes running with pid, ports, arg, and scripts used
-
+```
 create a symlink in /var/www to point to the html folder in this repo
 
 ### Using the application
