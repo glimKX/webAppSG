@@ -126,7 +126,7 @@ failRequest:{[pName]
 	.log.out "In .backend.failRequest --- failing sent request in ",.Q.s1 pName;
 	update status:`free from `.backend.connections where processName=pName;
 	res:enlist[`error]!enlist "Bad Request";
-	jobID:first exec jobID from `.backend.jobs where processName=pName; 
+	jobID:first exec jobID from `.backend.jobs where processName=pName,status=`sent; 
 	update status:`failed,msg:enlist "Bad Request" from `.backend.jobs where processName=pName,status=`sent;
 	.backend.sendResult[res;jobID];
  };
