@@ -48,7 +48,7 @@ forceConnect:{ .log.out "Force Connect to Gateway";
 funQStory:();
 
 /table init
-leaderBoard:`user xkey flip `rank`user`function`funcLength`overallSpeed!"JS*JJ"$\:();
+leaderBoard:`user xkey flip `ranking`user`function`funcLength`overallSpeed!"JS*JJ"$\:();
 jobs:`jobID xkey flip `jobID`processName`user`handle`function`status`msg!"JSSJ*S*"$\:();
 
 uploadTestCase:{[tab;csvFile] .log.out "In .backend.uploadTestCase -- proceeding to upload test cases";
@@ -63,7 +63,7 @@ changeTestCaseSchema:{[column;ty] .log.out "In .backend.changeTestCaseSchema -- 
 	neg[h]@\:({.test.upd[`.test.schema;x]};`colName`ty!(column;first ty));
  };
 
-upd:{[tab;x] if[0<=x`overallSpeed;tab upsert x]};
+upd:{[tab;x] if[0<=x`overallSpeed;tab upsert x;.backend.leaderBoard:update ranking:(1+i) from `overallSpeed xasc .backend.leaderBoard]};
 
 val:{[func;user;handle;jobID]
 	.log.out "In .backend.val";
@@ -130,6 +130,20 @@ failRequest:{[pName]
 	update status:`failed,msg:enlist "Bad Request" from `.backend.jobs where processName=pName,status=`sent;
 	.backend.sendResult[res;jobID];
  };
+
+//////////////////////////////////////////////////////
+//@Chat Functionality/////////////////////////////////
+//////////////////////////////////////////////////////
+
+//Table init
+chat:flip `time`user`msg!"PS*"$\:();
+
+//Upsert function
+chatHistory:{[time;user;msg]
+	`.backend.chat insert (time;user;msg);
+	if[(count .backend.chat)>=30;.backend.chat:-30#.backend.chat]
+ };
+
 \d .
 
 prepo:.z.po;

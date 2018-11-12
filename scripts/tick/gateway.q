@@ -82,6 +82,14 @@ sendResult:{[res;ID] .log.out "In .gateway.sendResult -- sending result back to 
 	h .j.j `func`output!(`.gateway.sendResult;res);
  };
 
+//Chat Functionality
+//Table upsert function
+chatStore:{[msg]
+        .log.out "In .gateway.chatstore -- Received chat message ", .Q.s1 `user`message!(.z.u;msg);
+        .log.out "Sending message to .backend.chat";
+        (neg .gateway.backEndHandle)(`.backend.chatHistory;.z.p;.z.u;msg)
+ };
+
 \d .
 
 / force backend to open handle back at gateway
