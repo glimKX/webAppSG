@@ -71,3 +71,4 @@ funQPortal
 
 * **Guan Yu** - *Initial Contribution* - [glimKx](https://github.com/glimkx)
 * **Hai Ming** - *Perm.q Contribution* 
+* **Daryl Lee** - *ChatRoom Contribution* - [valleyfresh](https://github.com/valleyfresh)
