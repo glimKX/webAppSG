@@ -57,7 +57,7 @@ function appendNewMsg(x){
 	if (x['user'] == username){
 		var msg = "<div class=\"balon1 p-2 m-0 position-relative\" data-is=\""+"You - "+x['msgTime']+"\">"+"<a class=\"float-right\">"+x['msg']+"</a></div>";
 	} else {
-		var msg = "<div class=\"balon2 p-2 m-0 position-relative\" data-is=\""+x['user']+" - "+x['datetime']+"\">"+"<a class=\"float-left sohbet2\">"+x['msg']+"</a></div>";	
+		var msg = "<div class=\"balon2 p-2 m-0 position-relative\" data-is=\""+x['user']+" - "+x['msgTime']+"\">"+"<a class=\"float-left sohbet2\">"+x['msg']+"</a></div>";	
 	}
 	msg = $.parseHTML(msg);
 	$("#sohbet").append(msg);

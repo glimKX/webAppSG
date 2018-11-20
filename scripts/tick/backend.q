@@ -136,11 +136,12 @@ failRequest:{[pName]
 //////////////////////////////////////////////////////
 
 //Table init
-chat:flip `time`user`msg!"*S*"$\:();
+chat:flip `msgTime`user`msg!"*S*"$\:();
 
 //Upsert function
-chatHistory:{[time;user;msg]
-	`.backend.chat insert (enlist time;user;enlist msg);
+chatHistory:{[msgTime;user;msg]
+	.log.out "Inserting ", .Q.s1 [`msgTime`user`msg!(msgTime;user;msg)] ," into .backend.chat";
+	`.backend.chat insert (enlist msgTime;user;enlist msg);
 	if[(count .backend.chat)>=30;.backend.chat:-30#.backend.chat]
  };
 
