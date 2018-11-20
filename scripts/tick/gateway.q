@@ -83,11 +83,26 @@ sendResult:{[res;ID] .log.out "In .gateway.sendResult -- sending result back to 
  };
 
 //Chat Functionality
-//Table upsert function
+//Chat history retrieval on login
+pullChat:{
+	.log.out "In .gateway.pullChat -- Retrieving messages from .backend.chat...";
+	res:.gateway.backEndHandle(`.backend.chat);
+	.log.out "Retrieved messages. Sending to front end...";
+	neg[.z.w] .j.j `func`output!(`.gateway.chatHistory;res);	
+ };
+
+//Backend message storage function
 chatStore:{[msg]
-        .log.out "In .gateway.chatstore -- Received chat message ", .Q.s1 `user`message!(.z.u;msg);
+        .log.out "In .gateway.chatStore -- Received chat message ", .Q.s1 `user`message!(.z.u;msg);
         .log.out "Sending message to .backend.chat";
-        (neg .gateway.backEndHandle)(`.backend.chatHistory;.z.p;.z.u;msg)
+	msgTime:string .z.Z;
+        neg[.gateway.backEndHandle](`.backend.chatHistory;msgTime;.z.u;msg);
+	
+	//Sending chat message to connected clients
+	.log.out "Refreshing chat to connected clients";
+	h:exec handle from .log.connections where host<>`localhost,connection=`opened;
+	res:`user`msgTime`msg!(.z.u;msgTime;msg);
+	if[count h;neg[h]@\: .j.j `func`output!(`.gateway.chatRefresh;res)];
  };
 
 \d .
