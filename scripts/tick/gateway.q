@@ -87,6 +87,8 @@ sendResult:{[res;ID] .log.out "In .gateway.sendResult -- sending result back to 
 pullChat:{
 	.log.out "In .gateway.pullChat -- Retrieving messages from .backend.chat...";
 	res:.gateway.backEndHandle(`.backend.chat);
+	img:`user xcol .gateway.backEndHandle(`.backend.imgTable);
+	res:res lj img;
 	.log.out "Retrieved messages. Sending to front end...";
 	neg[.z.w] .j.j `func`output!(`.gateway.chatHistory;res);	
  };
@@ -96,12 +98,13 @@ chatStore:{[msg]
         .log.out "In .gateway.chatStore -- Received chat message ", .Q.s1 `user`message!(.z.u;msg);
         .log.out "Sending message to .backend.chat";
 	msgTime:string .z.Z;
+	img:.gateway.backEndHandle"exec img from .backend.imgTable where username = `",string .z.u;
         neg[.gateway.backEndHandle](`.backend.chatHistory;msgTime;.z.u;msg);
 	
 	//Sending chat message to connected clients
 	.log.out "Refreshing chat to connected clients";
 	h:exec handle from .log.connections where host<>`localhost,connection=`opened;
-	res:`user`msgTime`msg!(.z.u;msgTime;msg);
+	res:`user`msgTime`msg`img!(.z.u;msgTime;msg;img);
 	if[count h;neg[h]@\: .j.j `func`output!(`.gateway.chatRefresh;res)];
  };
 
@@ -127,6 +130,12 @@ retrieveImage:{
 	res:.gateway.backEndHandle"exec img from .backend.imgTable where username =`",x;
 	if[count res;:`func`output!(`.gateway.retrieveImage;res)];
 	"User does not have a profile picture in the backend"
+ };
+
+retrieveAllUsers:{
+	res:.gateway.backEndHandle".backend.imgTable";
+	if[count res;:`func`output!(`.gateway.retrieveAllUsers;res)];
+	"No stored images in backend"
  };
 
 \d .

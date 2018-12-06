@@ -60,9 +60,9 @@ function appendNewMsg(x){
 	//take in x which is a dictionary
 	//for loop, parse dictionary, append user details
 	if (x['user'] == username){
-		var msg = "<div class=\"balon1 p-2 m-0 position-relative\" data-is=\""+"You - "+x['msgTime']+"\">"+"<a class=\"float-right\">"+x['msg']+"</a></div>";
+		var msg = "<div class=\"balon1 p-2 m-0 position-relative\" data-is=\""+"You - "+x['msgTime']+"\">"+"<img class=\"rounded float-right\" style=\"width: 50px;height: 50px;\" src=\""+x['img']+"\"><a class=\"float-right\">"+x['msg']+"</a></div>";
 	} else {
-		var msg = "<div class=\"balon2 p-2 m-0 position-relative\" data-is=\""+x['user']+" - "+x['msgTime']+"\">"+"<a class=\"float-left sohbet2\">"+x['msg']+"</a></div>";	
+		var msg = "<div class=\"balon2 p-2 m-0 position-relative\" data-is=\""+x['user']+" - "+x['msgTime']+"\">"+"<img class=\"rounded float-left\" style=\"width: 50px;height: 50px;\" src=\""+x['img']+"\"><a class=\"float-left sohbet2\">"+x['msg']+"</a></div>";	
 	}
 	msg = $.parseHTML(msg);
 	$("#sohbet").append(msg);
@@ -79,15 +79,50 @@ function updateMsgTable(x){
 }
 
 function readImage(x){
-	console.log(x);
 	if (x.files && x.files[0]) {
 		var fileName = x.files[0];
+		var img = document.createElement("img");
+		var imageType = /image.*/;
 		var fr = new FileReader();
-		fr.onload = function(e) {
-			$("#profileImg").attr('src',e.target.result);
-			storeImage(e.target.result);
+		if (fileName.type.match(imageType)){
+			fr.onload = function(e) {
+				$("#profileImg").attr('src',e.target.result);
+				img.src = e.target.result;
+				var canvas = document.createElement('canvas');
+				var ctx = canvas.getContext("2d");
+				ctx.drawImage(img, 0, 0);
+
+				var MAX_WIDTH = 50;
+				var MAX_HEIGHT = 50;
+				var width = img.width;
+				var height = img.height;
+
+				if (width > height) {
+				  if (width > MAX_WIDTH) {
+				    height *= MAX_WIDTH / width;
+				    width = MAX_WIDTH;
+				  }
+				} else {
+				  if (height > MAX_HEIGHT) {
+				    width *= MAX_HEIGHT / height;
+				    height = MAX_HEIGHT;
+				  }
+				}
+				canvas.width = width;
+				canvas.height = height;
+				var ctx = canvas.getContext("2d");
+				ctx.drawImage(img, 0, 0, width, height);
+
+				var dataurl = canvas.toDataURL('image/png');
+				//edge case handling
+				if (dataurl == "data:,"){readImage(x)}
+				console.log(dataurl);
+				storeImage(dataurl);
+			}
+			fr.readAsDataURL(fileName);
+		} else {
+			alert("File not supported");
 		}
-		fr.readAsDataURL(fileName);
 	}
 }
 
@@ -97,11 +132,12 @@ function storeImage(x){
         ws.send(msg);
 }
 
-function retrieveImage(x){
+function retrieveImage(){
 	//Sends username to backend and retrieve
 	var msg=JSON.stringify({func:".gateway.retrieveImage",args:username});
 	ws.send(msg);
 }
+
 //Event
 $("#joinBtn").click(function(){going()});
 $("#changeBtn").click(function(){$("[class='form-group']").toggle()});
