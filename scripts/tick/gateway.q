@@ -105,6 +105,30 @@ chatStore:{[msg]
 	if[count h;neg[h]@\: .j.j `func`output!(`.gateway.chatRefresh;res)];
  };
 
+//getCountryOrigin API
+getOrigin:{
+	h:.z.w;
+	//expect string ip
+	ip:exec first ipAddress from .log.connections where handle = h, connection = `opened; 
+	.log.out "In .gateway.getOrigin -- Received ip: ", ip;
+	apiLink:(,/)("http://api.ipstack.com/";ip;"?access_key=449c6201e6517a4e1a3ebc448143d249");
+	`func`output!(`.gateway.getOrigin;(.j.k .Q.hg hsym `$apiLink)`city)
+ };
+
+//store Image
+storeImage:{
+ 	.log.out "In .gateway.storeImage -- Received args ", .Q.s1 x;
+	.gateway.backEndHandle(`.backend.storeImage;x)
+ };
+
+//retrieve Image
+retrieveImage:{
+	.log.out "In .gateway.retrieveImage -- Received args ", .Q.s1 x;
+	res:.gateway.backEndHandle"exec img from .backend.imgTable where username =`",x;
+	if[count res;:`func`output!(`.gateway.retrieveImage;res)];
+	"User does not have a profile picture in the backend"
+ };
+
 \d .
 
 / force backend to open handle back at gateway

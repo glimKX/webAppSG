@@ -44,6 +44,11 @@ function pullChatHistory(){
 	}
 }
 
+function pullOrigin(){
+	var msg = JSON.stringify({func:".gateway.getOrigin",args:""});
+	ws.send(msg);
+}
+
 function scrollBtm(x){
 	//take x as element id
 	//keeps scroll at the bottom
@@ -73,6 +78,30 @@ function updateMsgTable(x){
 	}
 }
 
+function readImage(x){
+	console.log(x);
+	if (x.files && x.files[0]) {
+		var fileName = x.files[0];
+		var fr = new FileReader();
+		fr.onload = function(e) {
+			$("#profileImg").attr('src',e.target.result);
+			storeImage(e.target.result);
+		}
+		fr.readAsDataURL(fileName);
+	}
+}
+
+function storeImage(x){
+	//Take in encoded image and sends string to kdb database
+	var msg=JSON.stringify({func:".gateway.storeImage",args:{"username":username,"img":x}});
+        ws.send(msg);
+}
+
+function retrieveImage(x){
+	//Sends username to backend and retrieve
+	var msg=JSON.stringify({func:".gateway.retrieveImage",args:username});
+	ws.send(msg);
+}
 //Event
 $("#joinBtn").click(function(){going()});
 $("#changeBtn").click(function(){$("[class='form-group']").toggle()});
@@ -109,6 +138,9 @@ $("#msgBtn").click(function(){
 	ws.send(JSON.stringify({func:".gateway.chatStore",args:msg}));
 	$("#msgInput").trigger("reset");
 });
-
-
+//Add input event for change of avatar
+$("#profileImg").click(function (){
+	$("#imgInput").trigger('click');
+});
+$("#imgInput").on("change",function(){readImage(this);});
 //Main

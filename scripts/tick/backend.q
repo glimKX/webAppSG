@@ -145,6 +145,19 @@ chatHistory:{[msgTime;user;msg]
 	if[(count .backend.chat)>=30;.backend.chat:-30#.backend.chat]
  };
 
+//////////////////////////////////////////////////////
+//@Profile Functionality//////////////////////////////
+//////////////////////////////////////////////////////
+
+//Table init
+imgTable:1!flip `username`img!"S*"$\:();
+
+//Upsert function
+storeImage:{
+	.log.out "Upserting ", .Q.s1 x;
+	`.backend.imgTable upsert @[x;`username;`$];
+	"Stored Image in Backend"
+ };
 \d .
 
 prepo:.z.po;
