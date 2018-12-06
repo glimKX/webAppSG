@@ -29,17 +29,17 @@
 	<link rel="stylesheet" type="text/css" href="css/messageBox.css">
 <!--===============================================================================================-->
 </head>
-<body>
+<body onload="clearCache()">
 	
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100 p-t-85 p-b-20">
 				<div class="login100-form validate-form">
 					<span class="login100-form-title p-b-70">
-						Welcome FOODAPP SG
+						Welcome to funQ Portal
 					</span>
 					<span class="login100-form-avatar">
-						<img src="vendor/Login_v6/images/avatar-01.jpg" alt="AVATAR">
+						<img src="vendor/Login_v6/images/funQ.png" alt="AVATAR">
 					</span>
 
 					<div class="wrap-input100 validate-input m-t-85 m-b-35" data-validate = "Enter username">
@@ -80,6 +80,7 @@
 	
 
 	<script>
+		function clearCache(){localStorage.removeItem("user");localStorage.getItem("pass")};
 		function login(){
 			var username = document.getElementsByName("username")[0].value;
 			var password = document.getElementsByName("pass")[0].value;

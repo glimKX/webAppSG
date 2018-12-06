@@ -122,13 +122,20 @@
             </li>
           </ol>
 	  <!-- storyboard for funQ -->
+	    <div class="accordion" id="accordionHeader">
 	    <div class="card mb-3">
-	    <div class="card-header">
+	      <div class="card-header" id="qHeader">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseHeader" aria-expanded="true" aria-controls="collapseHeader">
 	      funQ of the week
+	      </button>
 	      </div>
-	      <div class="card-body">
-		      <h4>--Story--</h4>
-		      <div id="funQStoryBoard"></div>
+	      <div id="collapseHeader" class="collapse show" aria-labelledby="qHeader" data-parent="#accordionHeader" style>
+	      	<div class="card-body">
+		  <h4>--Story--</h4>
+		  <div id="funQStoryBoard"></div>
+	        </div>
+	      </div>
+	      <div class="card-body" id="AdminBox">
 		      <div class="my-3"> 
 	      		<h5>--Admin Box--</h5>
 	      		<button class="btn btn-outline-secondary" type="button" id="changeBtn">Change Story</button>
@@ -177,6 +184,7 @@
 		      </div>
 	      </div>
 	    </div>
+	</div>
 	  <!-- q Console to Backend-->
 	  <div class="accordion" id="accordion">
   	    <div class="card mb-3">
@@ -232,7 +240,7 @@
                 </table>
               </div>
             </div>
-            <div class="card-footer small text-muted">Updated yesterday at ${Place_holder}</div>
+            <div id="ldrboardUpd" class="card-footer small text-muted">Updated yesterday at ${Place_holder}</div>
           </div>
 
         </div>
@@ -271,7 +279,7 @@
           <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="login.html">Logout</a>
+            <a class="btn btn-primary" href="..">Logout</a>
           </div>
         </div>
       </div>
@@ -296,7 +304,7 @@
     <script src="js/demo/chart-area-demo.js"></script>
 
     <!-- Module scripts-->
-    <script src="../src/ipc.js?1035"></script>
+    <script src="../src/ipc.js?1038"></script>
     <script src="../src/webapp.js?1054"></script>
     <script src="../src/jquery.csv.js"></script>
     <script src="../src/uploadCSV.js?1002"></script>

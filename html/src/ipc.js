@@ -65,7 +65,7 @@ function parseResult(data){
 	} else if (data.arg==".backend.leaderBoard"){
 	  parseTable(data.output); 
 	  var d = new Date();	
-	  $(".card-footer").text("Updated: "+String(d));
+	  $("#ldrboardUpd").text("Updated: "+String(d));
 	}
 }
 
@@ -94,5 +94,6 @@ $("#sendBtn").click(function(){ws.send($("[aria-label='q-console']").val())});
 $(document).ready(function(){
   //When document loads, make connections and work
   connect(username,password);
+  if(username != "Administrator"){$("#AdminBox").remove()};
 });
 
