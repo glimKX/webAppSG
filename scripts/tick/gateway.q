@@ -65,13 +65,24 @@ pushToKDB:{
 pullFromKDB:{
 	.log.out "Pulling from backend: ",x;
 	res:.gateway.backEndHandle x;
+	if[x like ".backend.leaderBoard";refresh[];:"Refresh Applied"];
 	`func`output`arg!(`.gateway.pullFromKDB;res;x)
  };
 
+//init with global to prevent release of results
+release:0b;
+
+releaseNow:{.gateway.release:1b};
+
 refresh:{
 	.log.out "Entered Refresh to clients";
-	h:exec handle from .log.connections where host<>`localhost,connection =`opened;
-	if[count h;neg[h]@\: .j.j pullFromKDB ".backend.leaderBoard"];
+	h:select user,handle from .log.connections where host<>`localhost,connection =`opened;
+	if[count[h] and .gateway.release;neg[h`handle]@\: .j.j `func`output`arg!(`.gateway.pullFromKDB;.gateway.backEndHandle ".backend.leaderBoard";".backend.leaderBoard");:""];
+	workingLeaderBoard:.gateway.backEndHandle ".backend.leaderBoard";
+	{[dict;workingLeaderBoard]
+		res:update function:count[i]#enlist "Not Released Yet" from workingLeaderBoard where user<>dict`user;
+		neg[dict`handle] .j.j `func`output`arg!(`.gateway.pullFromKDB;res;".backend.leaderBoard")
+	}[;workingLeaderBoard] each h
  };
 
 // function to send back result to client

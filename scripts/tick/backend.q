@@ -55,6 +55,9 @@ uploadTestCase:{[tab;csvFile] .log.out "In .backend.uploadTestCase -- proceeding
 	h:exec handle from .backend.connections where processName like "*TEST*";
 	.backend.l enlist (set;tab;csvFile);
 	neg[h]@\:(set;tab;csvFile);
+	//Reset Leaderboard with new test case
+	neg[.backend.gatewayHandle](set;`.backend.release;0b);
+	.backend.leaderBoard:`user xkey flip `ranking`user`function`funcLength`overallSpeed!"JS*JJ"$\:();
  };
 
 changeTestCaseSchema:{[column;ty] .log.out "In .backend.changeTestCaseSchema -- changing col: ",.Q.s[column]," schema: ",.Q.s[ty];

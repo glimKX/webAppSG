@@ -138,8 +138,18 @@ function retrieveImage(){
 	ws.send(msg);
 }
 
+function releaseResult(){
+	var msg=JSON.stringify({func:".gateway.releaseNow",args:""});
+	ws.send(msg);
+	alert("Results Released");
+	msg=JSON.stringify({func:".gateway.refresh",args:""});
+	ws.send(msg);
+	//we can add a functionality to send email - Todo
+}
+
 //Event
 $("#joinBtn").click(function(){going()});
+$("#releaseBtn").click(function(){releaseResult()});
 $("#changeBtn").click(function(){$("[class='form-group']").toggle()});
 $("#uploadBtn").click(function(){$("#dvImportSegments").toggle()});
 $("#changeSchemaBtn").click(function(){$("[class='form-group my-1']").toggle()});

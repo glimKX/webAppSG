@@ -140,6 +140,27 @@
 	      <div class="card-body" id="AdminBox">
 		      <div class="my-3"> 
 	      		<h5>--Admin Box--</h5>
+			<div class="my-3">
+			<button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#releaseModal">Release Result</button>
+			<!--Release Result Modal-->
+    			  <div class="modal fade" id="releaseModal" tabindex="-1" role="dialog" aria-labelledby="Release" aria-hidden="true">
+      			    <div class="modal-dialog" role="document">	
+        		      <div class="modal-content">
+          			<div class="modal-header">
+			          <h5 class="modal-title" id="releaseModal">Ready to Release?</h5>
+			            <button class="close" type="button" data-dismiss="modal" aria-label="Close">	
+			              <span aria-hidden="true">×</span>
+			            </button>
+			          </div>
+			        <div class="modal-body">Select "Release" below if you are ready to Release Answers for funQ.</div>
+		              	<div class="modal-footer">
+		              	<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+		              	<a class="btn btn-primary" data-dismiss="modal" id="releaseBtn">Release</a>
+		          	</div>
+		              </div>
+		      	    </div>
+			  </div>
+			</div>
 	      		<button class="btn btn-outline-secondary" type="button" id="changeBtn">Change Story</button>
 		        <div class="form-group" style="display:none">
 	       	          <label for="exampleFormControlTextarea1">Change Story</label>
@@ -310,8 +331,8 @@
     <script src="https://cdn.quilljs.com/1.2.6/quill.min.js"></script>
 
     <!-- Module scripts-->
-    <script src="../src/ipc.js?1041"></script>
-    <script src="../src/webapp.js?1055"></script>
+    <script src="../src/ipc.js?1042"></script>
+    <script src="../src/webapp.js?1057"></script>
     <script src="../src/jquery.csv.js"></script>
     <script src="../src/uploadCSV.js?1002"></script>
   </body>

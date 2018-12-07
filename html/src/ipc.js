@@ -53,6 +53,7 @@ function parseAnswers()
 function parseResult(data){
 	if (data.arg==".backend.funQStory"){
 	  storyBoard.setContents(data.output);
+	  if (username == "Administrator"){editor.setContents(data.output)}
 	} else if (data.arg==".backend.leaderBoard"){
 	  parseTable(data.output); 
 	  var d = new Date();	
