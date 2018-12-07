@@ -118,7 +118,9 @@
           <!-- Breadcrumbs-->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
-              <h2>funQ</h2>
+              <h2>funQ
+	      <img class="rounded float-left bg-light" style="width: 100px; height: 100px;" src="images/funQ.png">
+	      </h2>
             </li>
           </ol>
 	  <!-- storyboard for funQ -->
@@ -141,7 +143,7 @@
 	      		<button class="btn btn-outline-secondary" type="button" id="changeBtn">Change Story</button>
 		        <div class="form-group" style="display:none">
 	       	          <label for="exampleFormControlTextarea1">Change Story</label>
-			  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+			  <div class="form-control" id="exampleFormControlTextarea1" rows="3"></div>
 			  <button type="submit" class="btn btn-primary my-2">Submit Changes</button>
 			</div>
 		      </div>
@@ -303,9 +305,13 @@
     <!-- Demo scripts for this page-->
     <script src="js/demo/chart-area-demo.js"></script>
 
+    <!-- Main Quill library -->
+    <link href="https://cdn.quilljs.com/1.2.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.2.6/quill.min.js"></script>
+
     <!-- Module scripts-->
-    <script src="../src/ipc.js?1038"></script>
-    <script src="../src/webapp.js?1054"></script>
+    <script src="../src/ipc.js?1041"></script>
+    <script src="../src/webapp.js?1055"></script>
     <script src="../src/jquery.csv.js"></script>
     <script src="../src/uploadCSV.js?1002"></script>
   </body>

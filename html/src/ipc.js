@@ -1,7 +1,22 @@
 var username=localStorage.getItem('user');
 var password=localStorage.getItem('pass');
 var wsTmp, wsJsonObj,globalTable,qOutput;
-
+var editor = new Quill('#exampleFormControlTextarea1', {
+  modules: {
+    toolbar: [[{ header: [1, 2, false] }],
+     ['bold', 'italic', 'underline'],
+     ['image', 'code-block']]
+  },
+  placeholder: 'Change Story',
+  theme: 'snow' 
+});
+var storyBoard = new Quill('#funQStoryBoard', {
+  modules: {
+    toolbar: false
+  },
+  readOnly:true,
+  theme: 'snow'
+});
 //ipc functions
 function connect(username,password)
 {if ("WebSocket" in window)
@@ -35,6 +50,16 @@ function parseAnswers()
 	}
 }
 
+function parseResult(data){
+	if (data.arg==".backend.funQStory"){
+	  storyBoard.setContents(data.output);
+	} else if (data.arg==".backend.leaderBoard"){
+	  parseTable(data.output); 
+	  var d = new Date();	
+	  $("#ldrboardUpd").text("Updated: "+String(d));
+	}
+};
+
 function parseTable(data){
 	if (globalTable != null){globalTable.destroy();$("#dataTable").empty()}
 	var colNames = [];
@@ -55,18 +80,6 @@ function displayPushStatus(data){
 function changeSchemaStatus(data){
 	if (data == null){alert("Schema Changed")}
 	else {alert("Error: "+data)}
-}
-
-function parseResult(data){
-	console.log(data);
-	if (data.arg==".backend.funQStory"){
-	  $("#funQStoryBoard").empty();
-  	  $("#funQStoryBoard").append($.parseHTML(data.output));
-	} else if (data.arg==".backend.leaderBoard"){
-	  parseTable(data.output); 
-	  var d = new Date();	
-	  $("#ldrboardUpd").text("Updated: "+String(d));
-	}
 }
 
 function qPushToClient(data){

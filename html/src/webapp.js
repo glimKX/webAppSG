@@ -151,12 +151,11 @@ $(".dropdown-menu li a").click(function(){
 });
 $("button:contains('Submit Changes')").click(function(){
   //Parse text area
-  var textBox=$("#exampleFormControlTextarea1").val().replace(/(\r\n|\n|\r)/gm, "<br />");
+  var textBox=editor.getContents();
   //Store into KDB
   pushToKDB(".backend.funQStory",textBox);
   //Reflect it on page, replace
-  $("#funQStoryBoard").empty();
-  $("#funQStoryBoard").append($.parseHTML(textBox));
+  storyBoard.setContents(textBox);
 });
 $(document).ready(function(){
   //When document loads, extract data from KDB
