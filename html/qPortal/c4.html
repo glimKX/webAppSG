@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin - Dashboard</title>
+
+    <!-- Bootstrap core CSS-->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Page level plugin CSS-->
+    <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin.css" rel="stylesheet">
+	
+    <link href="css/chatBox.css" rel="stylesheet">
+    <link href="css/c4.css?3" rel="stylesheet">
+
+  </head>
+
+  <body id="page-top">
+
+    <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+      <a class="navbar-brand mr-5 mr-2 text-white">C4 Room</a>
+
+	<!-- Navbar -->
+	<ul class="navbar-nav ml-5">
+		<li class="nav-item">
+			<a class="nav-link" href="index.html">Home</a>
+		</li>
+		<li class="nav-item active">
+                        <a class="nav-link disabled" href="#">C4</a>
+                </li>
+	</ul>
+
+      <!-- Navbar Search -->
+      <div class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+      </div>
+
+      <!-- Navbar -->
+      <ul class="navbar-nav ml-auto ml-md-0">
+        <li class="nav-item dropdown no-arrow">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    <i class="fas username"></i>
+            <i class="fas fa-user-circle fa-fw"></i>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+            <a class="dropdown-item" href=".." data-toggle="modal" data-target="#logoutModal">Logout</a>
+          </div>
+        </li>
+      </ul>
+
+    </nav>
+
+    <div id="wrapper">
+
+      <!-- Sidebar -->
+      <div class="sidebar navbar-nav bg-dark">
+		<div class="jumbotron m-0 p-0 bg-dark">
+		<div class="row m-0 p-0 position-relative">
+		  <div class="col-12 p-0 m-0 position-absolute" style="right: 0px;">
+			<div class="card border-0 rounded" style="box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.10), 0 6px 10px 0 rgba(0, 0, 0, 0.01);  height: 70vh;">
+
+			  <div class="card-header p-1 bg-dark border border-top-0 border-left-0 border-right-0" style="color: rgba(96, 125, 139,1.0);">
+				
+				<img class="rounded float-left" style="width: 50px; height: 50px;" src="images/basic-bear-avatar.png" id="profileImg"/>
+				<input type="file" id="imgInput"  name="imgInput" style="display:none" />
+				<h6 class="float-left username" style="margin: 0px; margin-left: 10px;">${username}</h6>
+				<i class="fa fa-check text-primary" title="" aria-hidden="true" style="margin-left: 10px;"></i>
+				<small class="float-left" style="margin: 0px; margin-left: 10px;">${location}</small>
+					
+				  <div class="dropdown" style="display: none">
+
+					  <a id="dropdownMenuLink" data-toggle="dropdown" class="btn btn-sm float-right text-secondary" role="button"><h5><i class="fa fa-ellipsis-h" title="Ayarlar!" aria-hidden="true"></i>&nbsp;</h5></a>
+
+				  </div>
+					
+			  </div>
+			
+				<div class="card bg-dark border-0 m-0 p-0" style="height: 65vh;">
+			  <div id="sohbet" class="card border-0 m-0 p-0 position-relative bg-dark" style="overflow-y: auto; height: 100vh;">
+			
+			  </div>
+			  </div>
+
+			  <div class="w-100 card-footer p-0 bg-light border border-bottom-0 border-left-0 border-right-0">
+				
+					<form class="m-0 p-0" action="" method="POST" autocomplete="off" id="msgInput">
+    
+					  <div class="row m-0 p-0">
+						<div class="col-9 m-0 p-1 bg-dark">
+						
+							<input id="text" style="font-size: 12px" class="mw-100 border rounded form-control" type="text" name="text" title="Type a message..." placeholder="Type a message..." required>
+						  
+						</div>
+						<div class="col-3 m-0 p-1 bg-dark">
+						
+							<button class="btn btn-outline-secondary rounded border w-100" title="Gönder!" style="padding-right: 16px;" type="button" id="msgBtn"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+					 				
+						</div>
+					  </div>
+				
+				</form>
+					
+			  </div>
+
+			</div>
+		  </div>
+		  
+		</div>
+	  </div>
+      </div>
+
+      <div id="content-wrapper">
+
+        <div class="container-fluid">
+
+          <!-- Breadcrumbs-->
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <h2>C4
+	      <img class="rounded float-left bg-light" style="width: 100px; height: 100px;" src="images/c4.png">
+	      </h2>
+            </li>
+          </ol>
+	  <!-- Channel Join Functionality -->
+	    <div class="accordion" id="accordionHeader">
+	    <div class="card mb-3">
+	      <div class="card-header" id="qHeader">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseHeader" aria-expanded="true" aria-controls="collapseHeader">
+	      C4 Channel Selection
+	      </button>
+	      </div>
+	      <div id="collapseHeader" class="collapse show" aria-labelledby="qHeader" data-parent="#accordionHeader" style>
+	      	<div class="card-body">
+		  <h4>--Channels--</h4>
+		  <div id="ChannelBoard" class"=dropdown show">
+			  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="changeChannel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			  Select C4 Channel To Join
+			  </a>
+  			  <div class="dropdown-menu" aria-labelledby="changeChannel">
+    			    <a class="dropdown-item" value="1">Channel 1</a>
+			    <a class="dropdown-item" value="2">Channel 2</a>
+			    <a class="dropdown-item" value="3">Channel 3</a>
+  			  </div>
+			  <p id="channelID">Currently not in any Channel</p>
+		  </div>
+		</div>
+	      </div>
+	    </div>
+	    </div>
+	  <!-- Game Section-->
+	  <div class="accordion" id="accordion">
+  	    <div class="card mb-3">
+    	      <div class="card-header" id="gameConsole">
+        	  <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+		  Game Board
+        	  </button>
+    	      </div>
+    	    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+      	      <div class="card-body">
+		<div class="card-body border">
+		  <h5 class="card-title" id="c4Channel">C4 Title</h5>
+		  <button class="btn" type="button" onclick="callTab();">Call Tab</button>
+	          <button class="btn" type="button" onclick="callGrid();">Call Grid</button>
+		  <button class="btn" type="button" onclick="resetGame()" id="resetBtn";>Y</button>
+		  <div class="row">  
+		    <div class="col-sm-4">
+		      <div class="card-body">
+		        <div class="card-header">Text</div>
+			<p class="card-text" id="txtOutput"></p>
+		      </div>
+		    </div>
+		    <div class="col-sm-8">
+		      <div class="card-body">
+		        <div class="card-header">C4 Grid</div>
+			<div id="grid"></div>
+		      </div>
+		    </div>
+                  </div>
+		</div>
+      	      </div>
+    	    </div>
+  	  </div>
+          <!-- Number of logged users-->
+          <div class="card mb-3 d-none">
+            <div class="card-header">
+              <i class="fas fa-chart-area"></i>
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+	      Number of Users Joining Lunch
+              </button>
+	    </div>
+	    <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
+              <div class="card-body">
+                <canvas id="myAreaChart" width="100%" height="30"></canvas>
+              </div>
+	      <div class="card-footer small text-muted">Updated yesterday at ${Place_holder}</div>
+            </div>
+	  </div>
+
+          <!-- DataTables Example -->
+          <div class="card mb-3 d-none">
+            <div class="card-header" name="dataTable">
+	      <i class="fas fa-table"></i>
+	      <a class="font-weight-bold">Current League Table</a>
+	    </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                </table>
+              </div>
+            </div>
+            <div id="ldrboardUpd" class="card-footer small text-muted">Updated yesterday at ${Place_holder}</div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+        <!-- Sticky Footer -->
+        <footer class="sticky-footer">
+          <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+              <span>Created by the wonderful team of webappSG</span>
+            </div>
+          </div>
+        </footer>
+
+      </div>
+      <!-- /.content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="..">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Page level plugin JavaScript-->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin.min.js"></script>
+
+    <!-- Demo scripts for this page-->
+    <script src="js/demo/chart-area-demo.js"></script>
+
+    <!-- Main Quill library -->
+    <link href="https://cdn.quilljs.com/1.2.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.2.6/quill.min.js"></script>
+
+    <!-- Module scripts-->
+    <script src="../src/ipc.js?1048"></script>
+    <script src="../src/webapp.js?1057"></script>
+    <script src="../src/jquery.csv.js"></script>
+    <script src="../src/c4.js?19"></script>
+  </body>
+
+</html>

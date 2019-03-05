@@ -18,6 +18,9 @@ system "l ",getenv[`SCRIPTS_DIR],"/cron.q";
 / load heartbeat capability
 system "l ",getenv[`SCRIPTS_DIR],"/heartbeat.q";
 
+/ load c4 capability
+system "l ",getenv[`SCRIPTS_DIR],"/c4Generic.q";
+
 / log file for test process to replay if it get restarted
 /logFile:hsym`$getenv[`TESTLOG_DIR],"/TEST";
 /logFile set ();
@@ -56,7 +59,7 @@ uploadTestCase:{[tab;csvFile] .log.out "In .backend.uploadTestCase -- proceeding
 	.backend.l enlist (set;tab;csvFile);
 	neg[h]@\:(set;tab;csvFile);
 	//Reset Leaderboard with new test case
-	neg[.backend.gatewayHandle](set;`.backend.release;0b);
+	neg[.backend.gatewayHandle](set;`.gateway.release;0b);
 	.backend.leaderBoard:`user xkey flip `ranking`user`function`funcLength`overallSpeed!"JS*JJ"$\:();
  };
 

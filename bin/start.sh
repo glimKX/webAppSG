@@ -136,19 +136,19 @@ startTest()
 # Function: startHDB
 # Description: starts HDB
 ###########################################################
-startHDB()
+startC4()
 {
         printLines
-        info "Starting HDB"
+        info "Starting C4"
         printLines
-        info "Check for existing HDB"
-        if [[ -z $(ps -ef | grep "\.q" | grep hdb.q|grep -v grep) ]]
+        info "Check for existing C4"
+        if [[ -z $(ps -ef | grep "\.q" | grep c4.q|grep -v grep|grep -v vi) ]]
         then
-                info "No Existing HDB found"
-                info "Starting HDB"
-                bash hdb.sh  
+                info "No Existing C4 found"
+                info "Starting C4"
+                bash c4.sh  
         else
-                warn "Existing HDB found, not starting HDB"
+                warn "Existing HDB found, not starting C4"
         fi
         return 0
 }
@@ -226,6 +226,7 @@ then
 	startBackend
 	startGateway
 	startTest
+	startC4
 	info "Finish Starting ALL"
 elif [ "$1" = "tickerplant" ]
 then
@@ -255,12 +256,12 @@ then
 	sourceConfig
         startTest
         info "Finish Starting Test"
-elif [ "$1" = "hdb" ] 
+elif [ "$1" = "c4" ] 
 then
-        info "Starting HDB Only"
+        info "Starting C4 Only"
         sourceQ
         sourceConfig
-        startHDB
+        startC4
         info "Finish Starting HDB"
 elif [ "$1" = "gateway" ]
 then

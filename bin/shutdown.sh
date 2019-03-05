@@ -176,20 +176,20 @@ shutdownTest()
 # Function: shutdownHDB 
 # Description: shutdown HDB 
 ###########################################################
-shutdownHDB()
+shutdownC4()
 {
         printLines
-        info "Shutting down HDB Only"
+        info "Shutting down C4 Only"
         printLines
-        info "Check for running HDB"
-        if [[ -z $(ps -ef | grep "\.q" | grep hdb.q|grep -v grep) ]]
+        info "Check for running C4"
+        if [[ -z $(ps -ef | grep "\.q" | grep c4.q|grep -v grep) ]]
         then
                 info "No running q process found"
                 info "Shutdown not required"
                 exit 0
         else
                 info "Found running q processes"
-                for PID in $(ps -ef | grep "\.q" | grep hdb.q|grep -v grep | awk '{print $2}')
+                for PID in $(ps -ef | grep "\.q" | grep c4.q|grep -v grep | awk '{print $2}')
                         do
                                 info "Shutting down [$PID]" 
                                 ps -ef | grep -w $PID | grep -v grep 
@@ -243,10 +243,10 @@ elif [ "$1" = "test" ]
 then
         shutdownTest
         info "Finish Shutdown Test"
-elif [ "$1" = "hdb" ] 
+elif [ "$1" = "c4" ] 
 then
-        shutdownHDB
-        info "Finish Shutdown HDB"
+        shutdownC4
+        info "Finish Shutdown C4"
 elif [ "$1" = "gateway" ]
 then
 	shutdownGateway

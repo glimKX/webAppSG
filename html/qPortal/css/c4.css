@@ -1,0 +1,28 @@
+#grid {
+	font-family: "Courier New";  
+	border: 0px solid gray; margin-top: 10px; overflow:auto;float:center
+        }
+.grid { margin:1em auto; border-collapse:collapse }
+.grid td {
+	cursor:pointer;
+	width:30px; height:30px;
+	border:1px solid #ccc;
+	text-align:center;
+	font-family:sans-serif; font-size:13px
+	}
+.grid td.clicked {
+	background-color:yellow;
+	font-weight:bold; color:red;
+	}
+.rdot {
+  height: 20px;
+  width: 20px;
+  background-color: #ED0D32;
+  border-radius: 75%;
+	}
+.bdot {
+  height: 20px;
+  width: 20px;
+  background-color: #7994C3;
+  border-radius: 75%;
+	}

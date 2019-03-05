@@ -12,6 +12,9 @@ system "l ",getenv[`SCRIPTS_DIR],"/log.q";
 / load permissioning capability
 system "l ",getenv[`SCRIPTS_DIR],"/perm.q";
 
+/ load c4 capability
+system "l ",getenv[`SCRIPTS_DIR],"/c4Generic.q";
+
 /define .z.ws for websocket
 /TO-DO, put requests into a list so that gateway can be free while waiting for answer
 /Async queries to wait for answer with callback to update answers
