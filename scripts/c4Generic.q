@@ -21,6 +21,13 @@ runCommand:{[proc;args]
 	neg[.gateway.backEndHandle](sendTo;args);
  };
 
+pullCmd:{[args]
+	.log.out "Pull C4 Command from client --- ",.Q.s1 args;
+	sendTo:.gateway.backEndHandle"first exec handle from .backend.connections where processName like \"C4*\"";
+	res:.gateway.backEndHandle(sendTo;args);
+	`func`args`output!(`.c4.pullCmd;args;res)
+ };
+
 callTab:{[lby]
 	usr:exec user from .log.connections where handle = .z.w, connection=`opened;
         .log.out .Q.s[usr]," has attempt to join C4 game in lobby ",.Q.s[lby];
@@ -68,6 +75,18 @@ gatewayMessage:{[msg;usr]
 	usrHandles@\:.j.j `func`output!(`.c4.gatewayMessage;msg)
  };
 
+gatewayLastClicked:{[coord;usr]
+	usrHandles:neg exec handle from .log.connections where user in usr,connection = `opened;
+        .log.out "Sending messages to handles ",.Q.s usrHandles;
+        usrHandles@\:.j.j `func`output!(`.c4.lastMove;coord)
+ };
+
+gatewaySendLeaderBoard:{[board;usr]
+	usrHandles:neg exec handle from .log.connections where user in usr,connection = `opened;
+	.log.out "Sending messages to handles ",.Q.s usrHandles;
+	usrHandles@\:.j.j `func`output!(`.c4.leaderBoard;board)
+ };
+
 /Backend Only
 backendSendGrid:{[grid;usr]
 	.log.out "Sending grid to ",.Q.s1 usr;
@@ -77,6 +96,16 @@ backendSendGrid:{[grid;usr]
 backendMessage:{[msg;usr]
 	.log.out "Sending Message to ",.Q.s1 usr;
 	neg[.backend.gatewayHandle](`.c4.gatewayMessage;msg;usr);
+ };
+
+backendLastClicked:{[coord;usr]
+	.log.out "Sending last click coordinate to ",.Q.s1 usr;
+	neg[.backend.gatewayHandle](`.c4.gatewayLastClicked;coord;usr);
+ };
+
+backendSendLeaderBoard:{[board;usr]
+	.log.out "Sending leaderboard to ",.Q.s1 usr;
+	neg[.backend.gatewayHandle](`.c4.gatewaySendLeaderBoard;board;usr);
  };
 
 \d .

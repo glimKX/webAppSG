@@ -39,9 +39,9 @@ wrapGrid:{[lby] .j.j enlist[`grid]!enlist ./[string grid[lby];((::;0);(19;::));{
 //Message Dictionary Init
 msgDict:()!();
 
-msgDict[`welcome]:{[usr] "Welcome to CONNECT 4, You have Joined Lobby",(string exec lobby from tab where user=usr),"You are Player", string exec player from tab where user=usr};
+msgDict[`welcome]:{[usr] "Welcome to CONNECT 4, You have Joined Lobby ",(string exec lobby from tab where user=usr),"\n\nYou are Player", string exec player from tab where user=usr};
 msgDict[`waiting]:"Currently waiting for another player to join";
-msgDict[`spectate]:"You are in spectate mode";
+msgDict[`spectate]:{[usr] (raze/) "Welcome to CONNECT 4, You have Joined Lobby",(string exec lobby from tab where user=usr), "\n\nYou are in spectate mode"};
 ///Validation Messages///
 msgDict[`tryAgain]:"Invalid Input, Please try again";
 msgDict[`invalidMove]:"Invalid Move, bottom row not filled";
@@ -53,20 +53,21 @@ msgDict[`gamePlayer1]:{raze("Welcome to CONNECT 4, You are Player 1"; "\n\n"; "T
 msgDict[`gamePlayer2]:{raze("Welcome to CONNECT 4, You are Player 2"; "\n\n"; "There are 2 players, the game will now commence"; "\n\n"; "Instructions"; "\n\n"; "To begin, enter your coordinates"; " starting with your alphabet, followed by your number Eg S11"; "\n\n";raze "User ",(string exec user from tab where lobby=x,player=1), " has been randomly chosen to start first")};
 msgDict[`newGameCreated]:{raze raze ("A new game is created!"; "\n\n"; "User ",(string exec user from tab where lobby=x,player=1), " has been randomly selected to start first!")};
 msgDict[`gameOver]:{raze raze("Game Over! User ",string x, " has won! Would you like to restart? Y/N")};
-msgDict[`sameLobby]:{raze("The game has already started";"\n\n";raze "User ",(string exec user from tab where lobby=x,player=1), "turn!")};
+msgDict[`sameLobby]:{(raze/)("The game has already started";"\n\n";raze "User ",(string exec user from tab where lobby=x,player=1), "turn!")};
 msgDict[`playerQuit]:{(raze/)("User ",string x," has quit";"\n\n";"The game has reset now";"\n\n";"Please rejoin the channel to start a new game")};
 
 //Game initialisation logic
 //Runs function when new upsert to .c4.tab, this will trigger a check to see if game can be started
 joinLobby:{.debug.x:x;
 	`.c4.tab upsert x;
+	update started:(exec any started from .c4.tab where lobby=x[`lobby]) from `.c4.tab;
 	$[2=lobCount:exec count i from tab where lobby=x[`lobby],not started;
 		//start the lobby game
 		startGame x[`lobby];
 		1=lobCount;
 			sendMessage[msgDict[`waiting];x[`user]];
-			x[`user]<>exec user from tab where lobby=x[`lobby],started;
-				sendMessage[(raze/)(msgDict[`welcome] x[`user]),"\n\n",msgDict[`spectate];x[`user]];
+			x[`user] in exec user from tab where lobby=x[`lobby],null player;
+				[sendMessage[msgDict[`spectate]x[`user];x`user];sendGrid[wrapGrid[x`lobby];x`user]];
 				sendMessage[msgDict[`sameLobby] x[`lobby];x[`user]]
 	]
  }
@@ -92,11 +93,39 @@ sendMessage:{[msg;usr] neg[backendHandle](`.c4.backendMessage;msg;usr)}
 //Takes Grid string and list of users to send and passing it to gateway to return to clients
 sendGrid:{[grid;usr] neg[backendHandle](`.c4.backendSendGrid;grid;usr)}
 
+//Take last clicked and send to users to highlight it
+sendLastClicked:{[coord;usr] neg[backendHandle](`.c4.backendLastClicked;coord;usr)}
+
 //Call tab from user
 callTab:{[usr;lby] msg:.Q.s select user, player, lobby, lastQuery from tab where lobby=lby;
 	sendMessage[msg;usr];
  }
 
+//LeaderBoard Logic
+/table init
+leaderBoard:`user xkey flip `ranking`user`wins`loss`winRate!"JSJJF"$\:();
+//instead of checking if new user, to init the table with all users and zeroize everything from user database, this is the long term solution 
+//TO-DO
+updLdr:{[usr;win] 
+	//sometimes usr is enlisted
+	usr:first usr;
+	usrWinInfo:exec from leaderBoard where user=usr;
+	if[newUser:usrWinInfo[`user]=`;`.c4.leaderBoard upsert `wins`loss`winRate`user!(`long$win;`long$not win;(`long$win)%1;usr)];
+	if[not newUser;
+		$[win;
+			update wins:1+wins, winRate:(usrWinInfo[`wins]+1)%@[+/;1,usrWinInfo`wins`loss] from `.c4.leaderBoard where user=usr;
+			update loss:1+loss, winRate:(usrWinInfo[`wins])%@[+/;1,usrWinInfo`wins`loss] from `.c4.leaderBoard where user=usr
+		];
+	];
+	update ranking:(1+i) from `wins`winRate xdesc `.c4.leaderBoard;
+ }
+
+sendLeaderBoard:{neg[backendHandle] (`.c4.backendSendLeaderBoard;leaderBoard;exec user from tab)}
+
+//cron function to take snapshot of leaderBoard
+snapshot:{.log.out "Performing snapshot of leaderBoard";
+	(hsym `$getenv `C4_LEADERBOARD) set .c4.leaderBoard;
+	.log.out "Finished snapshot of leaderBoard"}
 
 //Every time a player joins a lobby, this will be ran
 startGame:{[lby] 
@@ -117,7 +146,7 @@ runJob:{[x;lby;usr]
 		x:(first x;"J"$1 _ x);
 		$[(all 1=exec turn from tab where lobby=lby) & not "Y"=first[x];
 			[
-			sendGrid[warpGrid lby;usr];
+			sendGrid[wrapGrid lby;usr];
 			:sendMessage[msgDict[`endGame];usr];
 			];
 	
@@ -157,14 +186,19 @@ validation:{[x;lby;usr] .log.out "Running .c4.validation";
 			if[.[`.c4.valCheck;(x;lby)];
 				.log.out "Validation Check identified that the game has ended";
 				winner:exec user from tab where lobby=lby, turn=1;
+				loser:exec user from tab where lobby=lby, turn=0, not null player;
+				updLdr[winner;1b];
+				updLdr[loser;0b];
 				update turn:1b from `.c4.tab where lobby=lby;
 				sendGrid[wrapGrid lby;users];
+				sendLeaderBoard[];
 				:sendMessage[msgDict[`gameOver] winner;users]
 				];
             		update lastQuery:enlist[x] from `.c4.tab where user=usr;
-		        update turn: (not exec turn from `.c4.tab) from `.c4.tab;
+			update not turn from `.c4.tab where not null player, lobby=lby;
 	 	        sendMessage[msgDict[`playersTurn] lby;users];
 			sendGrid[wrapGrid lby;users];
+			sendLastClicked[x;users];
             ];
 
             :sendMessage[msgDict[`wrongTurn];usr]
@@ -269,4 +303,10 @@ backendHandle:@[
 	
 \d .
 
+//init and check for snapshots
+if[not ()~ key hsym `$getenv `C4_LEADERBOARD;
+	.log.out "LeaderBoard Snapshot found, recalling on disk leaderBoard";
+	.c4.leaderBoard:get hsym `$getenv `C4_LEADERBOARD];
 
+//cron jobs
+.cron.addJob[`.c4.snapshot;1%24;::;-0wz;0wz;1b];

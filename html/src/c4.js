@@ -33,9 +33,9 @@ function createGrid(x){
 	var grid = clickableGrid(x,function(el,row,col,i){
 		console.log("Sending run job as:",x[row][0].split(">")[1][0]+col)
 		ws.send(JSON.stringify({func:".c4.runJob",args:{arg:x[row][0].split(">")[1][0]+col,lobby:currentLobby}}));
-		el.className='clicked';
-		if (lastClicked) lastClicked.className='';
-		lastClicked = el;
+		//el.className='clicked';
+		//if (lastClicked) lastClicked.className='';
+		//lastClicked = el;
 	});
 
 	grid.setAttribute('id', "GridChild");
@@ -112,6 +112,12 @@ function c4Generic(obj){
 			break;
 		case ".c4.retrieveMusic":$("source").attr("src",x);
 			break;
+		case ".c4.lastMove":lastMove(x);
+			break;
+		case ".c4.leaderBoard":parseTable(x);
+			break;
+		case ".c4.pullCmd":captureDyn(obj);
+			break;
 		default:console.log(x);
 		}
  }
@@ -123,6 +129,27 @@ function iconiseBoard(){
 	$( "td:contains('#')" ).text("")
  }
 
+function lastMove(coord){
+	var alphabet=coord[0];
+	var index=coord[1]-1;
 
+	$("td:has(b:contains('"+alphabet+"')) ~ td:eq("+index+")").addClass("clicked")
+ }
+
+function c4Init(){
+	//Pull leaderboard
+	var msg=JSON.stringify({func:".c4.pullCmd",args:".c4.leaderBoard"});
+	//Pull music
+	ws.send(msg)
+ }
+
+function captureDyn(obj){
+	var x = obj.output
+ 	switch(obj.args){
+		case ".c4.leaderBoard":parseTable(x);
+			break;
+		default:console.log(x);
+		}
+ }
 //add listenr to dropdown
 $("[aria-labelledby='changeChannel'] > a").click(function(){var channel=$(this).attr("value");changeChannel(channel)});

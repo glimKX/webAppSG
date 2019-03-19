@@ -21,7 +21,7 @@ var storyBoard = new Quill('#funQStoryBoard', {
 function connect(username,password)
 {if ("WebSocket" in window)
  {var l = window.location;ws = new WebSocket("ws://" + username + ":" +  password + "@" + (l.hostname ? l.hostname : "localhost") + ":" + (l.port ? l.port : "5030") + "/"); 
-  ws.onopen=function(e){console.log("connected");$(".username").text(username);pullOrigin();pullFromKDB(".backend.funQStory");pullFromKDB(".backend.leaderBoard");pullChatHistory();retrieveImage(username);callMusic()}
+  ws.onopen=function(e){console.log("connected");$(".username").text(username);pullOrigin();pullFromKDB(".backend.funQStory");pullFromKDB(".backend.leaderBoard");pullChatHistory();retrieveImage(username);c4Init();callMusic()}
   ws.onmessage=function(e){
 	  wsTmp=e.data;
 	  try {
@@ -64,12 +64,11 @@ function parseResult(data){
 	  if (username == "Administrator"){editor.setContents(data.output)}
 	} else if (data.arg==".backend.leaderBoard"){
 	  parseTable(data.output); 
-	  var d = new Date();	
-	  $("#ldrboardUpd").text("Updated: "+String(d));
 	}
 };
 
 function parseTable(data){
+	console.log(data)
 	if (globalTable != null){globalTable.destroy();$("#dataTable").empty()}
 	var colNames = [];
 	var dataNames = [];
@@ -80,6 +79,8 @@ function parseTable(data){
 		"columns": dataNames,
 		"columnDefs":colNames
 	});
+	var d = new Date();
+        $("#ldrboardUpd").text("Updated: "+String(d));
 }
 
 function displayPushStatus(data){
