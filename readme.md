@@ -25,6 +25,7 @@ Just requires the structure to be intact
 ```
 scripts
 |_______heartbeat.q(heartbeat to restart process)
+|_______c4Generic.q(c4 analytics required for gateway to client communication)
 |_______cron.q(cron/timer capability)
 |_______log.q(logging)
 |_______perm.q(permissioning)
@@ -32,6 +33,7 @@ scripts
 	|____________________________test.q (test processes to run testCases)
 	|____________________________backend.q (backend process, central node of connections internally, handles jobs dispatching with test processes)
 	|____________________________gateway.q (gateway process, central node of connections externally, handles jobs with clients)
+        |____________________________c4.q (c4 process for running of c4 logic)
 ```
 
 ## Starting the application
@@ -72,3 +74,4 @@ funQPortal
 * **Guan Yu** - *Initial Contribution* - [glimKx](https://github.com/glimkx)
 * **Hai Ming** - *Perm.q Contribution* 
 * **Daryl Lee** - *ChatRoom Contribution* - [valleyfresh](https://github.com/valleyfresh)
+* **Dexter Lee** - *C4 Game Contribution*
