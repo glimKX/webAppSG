@@ -57,7 +57,7 @@ printLines()
 ###########################################################
 printChoices()
 {
-        printf "These are the followings choices for start mode\n	1.	ALL\n	2.	tickerplant\n	3.	backend\n	4.	feed\n	5.	test\n	6.	hdb\n	7.	gateway\n"
+        printf "These are the followings choices for start mode\n	1.	ALL\n	2.	tickerplant\n	3.	backend\n	4.	feed\n	5.	test\n	6.	c4\n	7.	gateway\n"
         return 0
 }
 ###########################################################
@@ -137,8 +137,8 @@ then
 	test|5)
 	./start.sh test
 	;;
-	hdb|6)
-	./start.sh hdb
+	c4|6)
+	./start.sh c4
 	;;
 	gateway|7)
 	./start.sh gateway
@@ -171,8 +171,8 @@ then
 	'test'|'5')
 	./shutdown.sh test
 	;;
-	'hdb'|'6')
-        ./shutdown.sh hdb 
+	'c4'|'6')
+        ./shutdown.sh c4 
         ;;
 	'gateway'|'7')
 	./shutdown.sh gateway

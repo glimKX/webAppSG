@@ -153,7 +153,7 @@ runJob:{[x;lby;usr]
 		(all 1=exec turn from tab) & "Y"=first[x];
 			[
 			grid[lby]:createGrid`;
-			update turn:-2?10b from `.c4.tab where lobby=lby;
+			update turn:-2?10b from `.c4.tab where lobby=lby, (player=1) or player=2;
 			sendMessage[msgDict[`newGameCreated] lby;users:exec user from tab where lobby=lby];
 			:sendGrid[wrapGrid lby;users];
 			];
