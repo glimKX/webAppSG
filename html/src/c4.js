@@ -6,6 +6,8 @@ fakeChild.setAttribute('id', "GridChild");
 gridBox.append(fakeChild);
 var lastClicked;
 var currentLobby;
+var replayList=[];
+var replayIndex;
 
 function callTab(){
         ws.send(JSON.stringify({func:".c4.callTab",args:currentLobby}))
@@ -18,15 +20,18 @@ function callGrid(){
 
 function resetGame(){
 	ws.send(JSON.stringify({func:".c4.runJob",args:{arg:"Y",lobby:currentLobby}}));
+	$("#resetBtn").toggle();
+	$("#backBtn").toggle();
+        $("#forwardBtn").toggle();
+	replayList=[];
     }
 
 function endGame(){
-	var x = $("#resetBtn");
-	if (txtOutput.innerText.includes("restart")) {
-	x.style.display = "block";
-	} else {
-	x.style.display = "none";
-	}
+	$("#resetBtn").toggle();
+	$("#backBtn").toggle();
+	$("#forwardBtn").toggle();
+	//take note of the list length in replayList and assume user is in the last grid
+	replayIndex=replayList.length - 1;
     }
 
 function createGrid(x){
@@ -53,8 +58,29 @@ function newGrid(x){
 	console.log("In newGrid Function")
 	removeGrid()
 	x=JSON.parse(x);
+	replayList.push(x);
 	createGrid(x.grid)
 	iconiseBoard()
+    }
+
+function replayBack(){
+	replayIndex -= 1;
+	if (replayIndex < 0){alert("In Starting Grid, unable to replay backwards");replayIndex = 0;}
+	else {
+		removeGrid()
+		createGrid(replayList[replayIndex].grid)
+		iconiseBoard()
+	}
+    }
+
+function replayForward(){
+	replayIndex += 1;
+	if (replayIndex > replayList.length -1 ){alert("In Last Grid, unable to replay forward");replayIndex = replayList.length -1;}
+	else {
+		removeGrid()
+		createGrid(replayList[replayIndex].grid)
+		iconiseBoard()
+	}
     }
 
 function callMusic(){
@@ -132,7 +158,8 @@ function iconiseBoard(){
 function lastMove(coord){
 	var alphabet=coord[0];
 	var index=coord[1]-1;
-
+	var checker=$( "p:contains('Game Over!')" );
+	if (checker.length == 1){endGame()};
 	$("td:has(b:contains('"+alphabet+"')) ~ td:eq("+index+")").addClass("clicked")
  }
 

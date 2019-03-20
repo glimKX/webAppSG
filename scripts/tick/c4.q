@@ -192,7 +192,8 @@ validation:{[x;lby;usr] .log.out "Running .c4.validation";
 				update turn:1b from `.c4.tab where lobby=lby;
 				sendGrid[wrapGrid lby;users];
 				sendLeaderBoard[];
-				:sendMessage[msgDict[`gameOver] winner;users]
+				sendMessage[msgDict[`gameOver] winner;users];
+				:sendLastClicked[x;users];
 				];
             		update lastQuery:enlist[x] from `.c4.tab where user=usr;
 			update not turn from `.c4.tab where not null player, lobby=lby;

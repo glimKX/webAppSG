@@ -68,7 +68,7 @@ function parseResult(data){
 };
 
 function parseTable(data){
-	console.log(data)
+	if (data.length == 0){return;}
 	if (globalTable != null){globalTable.destroy();$("#dataTable").empty()}
 	var colNames = [];
 	var dataNames = [];

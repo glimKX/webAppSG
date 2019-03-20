@@ -67,10 +67,9 @@
 
       <!-- Sidebar -->
       <div class="sidebar navbar-nav bg-dark">
-		<div class="jumbotron m-0 p-0 bg-dark">
 		<div class="row m-0 p-0 position-relative">
 		  <div class="col-12 p-0 m-0 position-absolute" style="right: 0px;">
-			<div class="card border-0 rounded" style="box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.10), 0 6px 10px 0 rgba(0, 0, 0, 0.01);  height: 70vh;">
+			<div class="card border-0 rounded" height: 100vh;">
 
 			  <div class="card-header p-1 bg-dark border border-top-0 border-left-0 border-right-0" style="color: rgba(96, 125, 139,1.0);">
 				
@@ -88,7 +87,7 @@
 					
 			  </div>
 			
-				<div class="card bg-dark border-0 m-0 p-0" style="height: 65vh;">
+				<div class="card bg-dark border-0 m-0 p-0" style="height: 85vh;">
 			  <div id="sohbet" class="card border-0 m-0 p-0 position-relative bg-dark" style="overflow-y: auto; height: 100vh;">
 			
 			  </div>
@@ -119,7 +118,6 @@
 		  </div>
 		  
 		</div>
-	  </div>
       </div>
 
       <div id="content-wrapper">
@@ -173,8 +171,9 @@
 		<div class="card-body border">
 		  <h5 class="card-title" id="c4Channel">C4 Title</h5>
 		  <button class="btn" type="button" onclick="callTab();">Call Tab</button>
-	          <button class="btn" type="button" onclick="callGrid();">Call Grid</button>
-		  <button class="btn" type="button" onclick="resetGame()" id="resetBtn";>Y</button>
+		  <button class="btn" type="button" onclick="resetGame()" id="resetBtn"; style="display: none;">Y</button>
+		  <button class="btn" type="button" onclick="replayBack()" id="backBtn"; style="display: none;"><i class="fa fa-backward"></i></button>
+		  <button class="btn" type="button" onclick="replayForward()" id="forwardBtn"; style="display: none;"><i class="fa fa-forward"></i></button>
 		  <div class="row">  
 		    <div class="col-sm-4">
 		      <div class="card-body">
@@ -289,10 +288,10 @@
     <script src="https://cdn.quilljs.com/1.2.6/quill.min.js"></script>
 
     <!-- Module scripts-->
-    <script src="../src/ipc.js?1050"></script>
+    <script src="../src/ipc.js?1051"></script>
     <script src="../src/webapp.js?1057"></script>
     <script src="../src/jquery.csv.js"></script>
-    <script src="../src/c4.js?25"></script>
+    <script src="../src/c4.js?27"></script>
   </body>
 
 </html>
