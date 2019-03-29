@@ -26,6 +26,15 @@ function resetGame(){
 	replayList=[];
     }
 
+function resetGameP2(){
+	//server has to let P2 know that game has been reset.
+	//TO-DO
+	$("#resetBtn").toggle();
+        $("#backBtn").toggle();
+        $("#forwardBtn").toggle();
+        replayList=[];
+    }
+
 function endGame(){
 	$("#resetBtn").toggle();
 	$("#backBtn").toggle();
