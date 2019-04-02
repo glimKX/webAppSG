@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//      c4.q template                                                                                                   //
+//      c4bot.q template                                                                                                   //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 / load logging capability
@@ -13,6 +13,8 @@ system "l ",getenv[`SCRIPTS_DIR],"/cron.q";
 
 //Table initialisation
 tab:1!flip `user`player`lobby`lastQuery`turn`started`yourSym!"SJJ*BB*"$\:();
+monitor:()!();
+lobbyMonitor:()!();
 
 //TODO - Variable grid depending on user choice
 //Wrapper to reinitialise the grid
@@ -56,19 +58,19 @@ msgDict[`gameOver]:{raze raze("Game Over! User ",string x, " has won! Would you 
 msgDict[`sameLobby]:{(raze/)("The game has already started";"\n\n";raze "User ",(string exec user from tab where lobby=x,player=1), "turn!")};
 msgDict[`playerQuit]:{(raze/)("User ",string x," has quit";"\n\n";"The game has reset now";"\n\n";"Please rejoin the channel to start a new game")};
 
+//positionMapper config for Bot
+positionMapper:til[19]!19#.Q.A;
 //Game initialisation logic
 //Runs function when new upsert to .c4.tab, this will trigger a check to see if game can be started
 joinLobby:{.debug.x:x;
 	`.c4.tab upsert x;
-	update started:(exec any started from .c4.tab where lobby=x[`lobby]) from `.c4.tab where lobby=x[`lobby];
-	$[2=lobCount:exec count i from tab where lobby=x[`lobby],not started;
+	//only start bot game if only 1 player inside
+	$[1=lobCount:exec count i from tab where lobby=x[`lobby],not started;
 		//start the lobby game
 		startGame x[`lobby];
-		1=lobCount;
-			sendMessage[msgDict[`waiting];x[`user]];
-			x[`user] in exec user from tab where lobby=x[`lobby],null player;
-				[sendMessage[msgDict[`spectate]x[`user];x`user];sendGrid[wrapGrid[x`lobby];x`user]];
-				sendMessage[msgDict[`sameLobby] x[`lobby];x[`user]]
+		x[`user] in exec user from tab where lobby=x[`lobby],null player;
+			[sendMessage[msgDict[`spectate]x[`user];x`user];sendGrid[wrapGrid[x`lobby];x`user]];
+			sendMessage[msgDict[`sameLobby] x[`lobby];x[`user]]
 	]
  }
 
@@ -78,23 +80,26 @@ leaveLobby:{[usr]
 	args:exec from tab where user=usr;
 	lobbyStatus:select from tab where lobby=args[`lobby];
 	//TODO to include a functionality for spectator to takeover
-	
 	//for now send message to everyone that game ended if user is the one playing
-	if[any (exec player from lobbyStatus where user=usr) in (1 2);	
-		sendMessage[msgDict[`playerQuit] usr;exec user from lobbyStatus];
+	if[any 1=exec player from lobbyStatus where user=usr;	
+		sendMessage[msgDict[`playerQuit] usr;excludeBot exec user from lobbyStatus];
 		delete from `.c4.tab where lobby=args[`lobby]
 	];
 	delete from `.c4.tab where user = usr;
+	.c4.monitor:lobbyMonitor[args`lobby] _ monitor
  }
 
 //Take string message and list of users to send and passing it to gateway to return to clients
-sendMessage:{[msg;usr] neg[backendHandle](`.c4.backendMessage;msg;usr)}
+sendMessage:{[msg;usr] if[not count usr;:()]; neg[backendHandle](`.c4.backendMessage;msg;usr)}
 
 //Takes Grid string and list of users to send and passing it to gateway to return to clients
-sendGrid:{[grid;usr] neg[backendHandle](`.c4.backendSendGrid;grid;usr)}
+sendGrid:{[grid;usr] if[not count usr;:()]; neg[backendHandle](`.c4.backendSendGrid;grid;usr)}
 
 //Take last clicked and send to users to highlight it
-sendLastClicked:{[coord;usr] neg[backendHandle](`.c4.backendLastClicked;coord;usr)}
+sendLastClicked:{[coord;usr] if[not count usr;:()]; neg[backendHandle](`.c4.backendLastClicked;coord;usr)}
+
+//Bot excluded
+excludeBot:{x where not x like "bot*"}
 
 //Call tab from user
 callTab:{[usr;lby] msg:.Q.s select user, player, lobby, lastQuery from tab where lobby=lby;
@@ -103,43 +108,61 @@ callTab:{[usr;lby] msg:.Q.s select user, player, lobby, lastQuery from tab where
 
 //LeaderBoard Logic
 /table init
-leaderBoard:`user xkey flip `ranking`user`wins`loss`winRate!"JSJJF"$\:();
+/leaderBoard:`user xkey flip `ranking`user`wins`loss`winRate!"JSJJF"$\:();
 //instead of checking if new user, to init the table with all users and zeroize everything from user database, this is the long term solution 
 //TO-DO
-updLdr:{[usr;win] 
+/updLdr:{[usr;win] 
 	//sometimes usr is enlisted
-	usr:first usr;
-	usrWinInfo:exec from leaderBoard where user=usr;
-	if[newUser:usrWinInfo[`user]=`;`.c4.leaderBoard upsert `wins`loss`winRate`user!(`long$win;`long$not win;(`long$win)%1;usr)];
-	if[not newUser;
-		$[win;
-			update wins:1+wins, winRate:(usrWinInfo[`wins]+1)%@[+/;1,usrWinInfo`wins`loss] from `.c4.leaderBoard where user=usr;
-			update loss:1+loss, winRate:(usrWinInfo[`wins])%@[+/;1,usrWinInfo`wins`loss] from `.c4.leaderBoard where user=usr
-		];
-	];
-	update ranking:(1+i) from `wins`winRate xdesc `.c4.leaderBoard;
- }
+/	usr:first usr;
+/	usrWinInfo:exec from leaderBoard where user=usr;
+/	if[newUser:usrWinInfo[`user]=`;`.c4.leaderBoard upsert `wins`loss`winRate`user!(`long$win;`long$not win;(`long$win)%1;usr)];
+/	if[not newUser;
+/		$[win;
+/			update wins:1+wins, winRate:(usrWinInfo[`wins]+1)%@[+/;1,usrWinInfo`wins`loss] from `.c4.leaderBoard where user=usr;
+/			update loss:1+loss, winRate:(usrWinInfo[`wins])%@[+/;1,usrWinInfo`wins`loss] from `.c4.leaderBoard where user=usr
+/		];
+/	];
+/	update ranking:(1+i) from `wins`winRate xdesc `.c4.leaderBoard;
+/}
 
-sendLeaderBoard:{neg[backendHandle] (`.c4.backendSendLeaderBoard;leaderBoard;exec user from tab)}
-
-//cron function to take snapshot of leaderBoard
-snapshot:{.log.out "Performing snapshot of leaderBoard";
-	(hsym `$getenv `C4_LEADERBOARD) set .c4.leaderBoard;
-	.log.out "Finished snapshot of leaderBoard"}
+/sendLeaderBoard:{neg[backendHandle] (`.c4.backendSendLeaderBoard;leaderBoard;exec user from tab)}
 
 //Every time a player joins a lobby, this will be ran
 startGame:{[lby] 
+		`.c4.tab upsert `user`lobby!(`$"bot_",10?.Q.A;lby);
 		update player:(1 2), lastQuery:(::),turn:0b,started:1b,yourSym:"#%" from `.c4.tab where lobby=lby;
-            	update turn:-2?10b from `.c4.tab where lobby=lby;
+        	update turn:-2?10b from `.c4.tab where lobby=lby;
+		update player:?[turn;1;2] from `.c4.tab where lobby=lby;
+		lobbyMonitor[lby]:`$"lbyID",string "j"$.z.T;
 		//creates a new grid for the lobby;
 		grid[lby]:createGrid`;
 		//player1 message
-		sendMessage[msgDict[`gamePlayer1] lby;exec user from tab where lobby=lby,player=1];
+		sendMessage[msgDict[`gamePlayer1] lby;excludeBot exec user from tab where lobby=lby,player=1];
 		//player2 message
-		sendMessage[msgDict[`gamePlayer2] lby;exec user from tab where lobby=lby,player=2];
+		sendMessage[msgDict[`gamePlayer2] lby;excludeBot exec user from tab where lobby=lby,player=2];
 		//sendGrid to start Game
-		sendGrid[wrapGrid[lby];exec user from tab where lobby=lby];
+		sendGrid[wrapGrid[lby];excludeBot exec user from tab where lobby=lby];
+		//starting monitoring ID
+		
+		//if bot is player one, trigger event to move
+		if[first like[exec user from tab where lobby=lby, turn=1b;"bot*"];botMove lby];
  }   
+
+
+ 
+botMove:{[lby]
+		.log.out "Bot move in lobby: ",string lby;
+		validMove:(positionMapper (last where@) each flip (1_'-1_grid[lby])=0),'string 1+til 20;
+		runJob[moved:raze 1?validMove;lby;exec user from tab where user like "bot*"];
+		.log.out "Bot move ends with ",.Q.s moved;
+ }
+
+eod:{[dt]
+		.log.out "Running EOD for ",string dt;
+		if[not count monitor;.log.out "Nothing in monitor to save down";:()];
+		(` sv (dir;`$string dt;`c4Monitor))  set .Q.en[dir] flip `id`sequence!(key monitor;value monitor);
+		.log.out "Finished EOD for ",string dt;
+ }
 
 //due to multiple lobby logic, and username tagging, runJob needs a couple of args
 runJob:{[x;lby;usr] 
@@ -154,12 +177,15 @@ runJob:{[x;lby;usr]
 			[
 			grid[lby]:createGrid`;
 			update turn:-2?10b from `.c4.tab where lobby=lby, (player=1) or player=2;
-			sendMessage[msgDict[`newGameCreated] lby;users:exec user from tab where lobby=lby];
+			update player:?[turn;1;2] from `.c4.tab where lobby=lby, player in 1 2;
+			sendMessage[msgDict[`newGameCreated] lby;users:excludeBot exec user from tab where lobby=lby];
 			:sendGrid[wrapGrid lby;users];
 			];
 		];
 		//usr is enlisted and this will error out in validation analytics
-		.[`.c4.validation;(x;lby;first usr)]
+		.[`.c4.validation;(x;lby;first usr)];
+		//Bot action
+		if[not first[usr] like "bot*";botMove lby];
  }
 			
 validation:{[x;lby;usr] .log.out "Running .c4.validation";
@@ -183,16 +209,19 @@ validation:{[x;lby;usr] .log.out "Running .c4.validation";
               		];
 			  
             		grid[lby]:.[grid[lby]; (where x[0] in/:grid[lby]), x 1;: ;first exec yourSym from tab where user=usr];
+			//store coordinates 
+			monitor[lobbyMonitor[lby]],:`$raze x[0],string 1_x;
 			if[.[`.c4.valCheck;(x;lby)];
 				.log.out "Validation Check identified that the game has ended";
 				winner:exec user from tab where lobby=lby, turn=1;
-				loser:exec user from tab where lobby=lby, turn=0, not null player;
-				updLdr[winner;1b];
-				updLdr[loser;0b];
+                                loser:exec user from tab where lobby=lby, turn=0, not null player;
+				playerWin:exec player from tab where user = first winner;
+				monitor[lobbyMonitor[lby]],:`$string playerWin;
+				lobbyMonitor[lby]:`$"lbyID",string "j"$.z.T;
 				update turn:1b from `.c4.tab where lobby=lby;
 				sendGrid[wrapGrid lby;users];
-				sendLeaderBoard[];
 				sendMessage[msgDict[`gameOver] winner;users];
+				//end coordinates storing
 				:sendLastClicked[x;users];
 				];
             		update lastQuery:enlist[x] from `.c4.tab where user=usr;
@@ -303,11 +332,3 @@ backendHandle:@[
  ];		
 	
 \d .
-
-//init and check for snapshots
-if[not ()~ key hsym `$getenv `C4_LEADERBOARD;
-	.log.out "LeaderBoard Snapshot found, recalling on disk leaderBoard";
-	.c4.leaderBoard:get hsym `$getenv `C4_LEADERBOARD];
-
-//cron jobs
-.cron.addJob[`.c4.snapshot;1%24;::;-0wz;0wz;1b];

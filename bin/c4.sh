@@ -45,3 +45,13 @@ then
 else
 	err "C41 failed to start"
 fi
+
+($q tick/c4bot.q -w 200 -p $BOTC41_PORT > /dev/null 2>&1 &)
+#rlwrap $q tick/c4.q -w 200 -p $C41_PORT
+sleep 2
+if [[ ! -z $(ps -ef|grep $BOTC41_PORT |grep -v grep|grep -v bash) ]]
+then
+        info "BOTC41 started on port $BOTC41_PORT"
+else
+        err "C41 failed to start"
+fi

@@ -13,6 +13,13 @@ usrLeft:{[w]
 	.log.out .Q.s[usr]," has left the C4 application";
 	runCommand["C4*";(`.c4.leaveLobby;first usr)]
  };
+ 
+usrLeftBot:{[w]
+	//takes handle which usr quit and send to c4 process to run leaveLobby
+	usr:exec user from .log.connections where handle = w, connection=`opened;
+	.log.out .Q.s[usr]," has left the C4 application";
+	runCommand["BOTC4*";(`.c4.leaveLobby;first usr)]
+ };
 
 runCommand:{[proc;args] 
 	//generic function to run all c4 command through this function.
@@ -40,12 +47,19 @@ joinLobby:{[lby]
 	.log.out .Q.s[usr]," has attempt to join C4 game in lobby ",.Q.s[lby];
 	runCommand["C4*";(`.c4.joinLobby;first each `user`lobby!(usr;"J"$lby))]
  };
+ 
+joinLobbyBot:{[lby]
+	//build instructions before sending to run internally
+	usr:exec user from .log.connections where handle = .z.w, connection=`opened;
+	.log.out .Q.s[usr]," has attempt to join C4 BOT game in lobby ",.Q.s[lby];
+	runCommand["BOTC4*";(`.c4.joinLobby;first each `user`lobby!(usr;"J"$lby))]
+ };
 
-leaveLobby:{[lby]
+leaveLobbyBot:{[lby]
 	//similar to joinLobby
 	usr:exec user from .log.connections where handle = .z.w, connection=`opened;
-	.log.out .Q.s[usr]," left C4 game lobby ",.Q.s[lby];
-	runCommand["C4*";(`.c4.leaveLobby;first usr)]
+	.log.out .Q.s[usr]," left C4 BOT game lobby ",.Q.s[lby];
+	runCommand["BOTC4*";(`.c4.leaveLobby;first usr)]
  };
 
 runJob:{[x]
@@ -55,6 +69,15 @@ runJob:{[x]
 	usr:exec user from .log.connections where handle = .z.w, connection=`opened;
 	.log.out .Q.s[usr]," sent instruction to run job at ",.Q.s[x];
 	runCommand["C4*";(`.c4.runJob;arg;"J"$lby;usr)];
+ };
+ 
+runJobBot:{[x]
+	.debug.x:x;
+	lby:x[`lobby];
+	arg:x[`arg];
+	usr:exec user from .log.connections where handle = .z.w, connection=`opened;
+	.log.out .Q.s[usr]," sent instruction to run job at ",.Q.s[x];
+	runCommand["BOTC4*";(`.c4.runJob;arg;"J"$lby;usr)];
  };
 
 retreiveMusic:{
