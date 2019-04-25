@@ -93,22 +93,22 @@ startBackend()
 	return 0
 }
 ###########################################################
-# Function: startFeed
-# Description: starts FeedHandler
+# Function: startDaidi
+# Description: starts Daidi
 ###########################################################
-startFeed()
+startDaidi()
 {
         printLines
-	info "Starting FeedHandler"
+	info "Starting Daidi"
 	printLines
-	info "Check for existing feedHandler"
-	if [[ -z $(ps -ef | grep "\.q" | grep feed.q|grep -v grep) ]]
+	info "Check for existing Daidi"
+	if [[ -z $(ps -ef | grep "\.q" | grep daidi.q|grep -v grep) ]]
 	then
-        	info "No Existing FeedHandler found"
-        	info "Starting FeedHandler"
-        	bash feed.sh 
+        	info "No Existing Daidi found"
+        	info "Starting Daidi"
+        	bash daidi.sh 
 	else
-        	warn "Existing FeedHandler found, not starting FeedHandler"
+        	warn "Existing Daidi found, not starting Daidi"
 	fi
         return 0
 }
@@ -133,8 +133,8 @@ startTest()
         return 0
 }
 ###########################################################
-# Function: startHDB
-# Description: starts HDB
+# Function: startC4
+# Description: starts C4
 ###########################################################
 startC4()
 {
@@ -227,6 +227,7 @@ then
 	startGateway
 	startTest
 	startC4
+	startDaidi
 	info "Finish Starting ALL"
 elif [ "$1" = "tickerplant" ]
 then
@@ -242,12 +243,12 @@ then
 	sourceConfig
 	startBackend
 	info "Finish Starting Backend"
-elif [ "$1" = "feed" ]
+elif [ "$1" = "daidi" ]
 then
-	info "Starting FeedHandler Only"
+	info "Starting Daidi Only"
 	sourceQ
 	sourceConfig
-	startFeed
+	startDaidi
 	info "Finish Starting FeedHandler"
 elif [ "$1" = "test" ]
 then

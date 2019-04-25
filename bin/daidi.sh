@@ -35,12 +35,13 @@ printLines()
 }
 ###########################################################
 cd $SCRIPTS_DIR
-info "Initialising HDB"
-($q tick/hdb.q -p $HDB_PORT > /dev/null 2>&1 &)
+info "Initialising DAIDI"
+($q tick/daidi.q -p $DAIDI_PORT > /dev/null 2>&1 &)
+#$q tick/daidi.q -p $DAIDI_PORT
 sleep 2
-if [[ ! -z $(ps -ef|grep $HDB_PORT|grep hdb.q|grep -v bash) ]]
+if [[ ! -z $(ps -ef|grep $DAIDI_PORT|grep daidi.q|grep -v bash) ]]
 then 
-	info "HDB started on port $HDB_PORT"
+	info "DAIDI started on port $DAIDI_PORT"
 else
-	err "HDB failed to start"
+	err "DAIDI failed to start"
 fi
