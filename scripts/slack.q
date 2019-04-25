@@ -94,7 +94,8 @@
 	}
 
 .main.dbs:{.alphavantage.sendToSlack .alphavantage.checkPrice enlist[`symbol]!enlist`D05.SI};
+.main.hip:{.alphavantage.sendToSlack .alphavantage.checkPrice enlist[`symbol]!enlist`H17.SI};
 //to include a table/configuration to compare against time to send prices
-.z.ts:{if[(.z.T within (09:00:00;19:00:00)) and not (.z.D mod 7) in 0 1;.main.dbs`]}
+.z.ts:{if[(.z.T within (09:00:00;19:00:00)) and not (.z.D mod 7) in 0 1;.main.dbs`;.main.hip`]}
 \t 600000
 
