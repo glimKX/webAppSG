@@ -12,18 +12,17 @@ system "l ",getenv[`SCRIPTS_DIR],"/cron.q";
 ////   Client Play Function   ////
 /////////////////////////////////
 
-playHand:{[cards] 
-	$[.backend.checkTurn[];.backend.turnMsg[];
+playHand:{[cards;usr] 
+	$[.backend.checkTurn[];.backend.turnMsg[usr];
 	//First hand validations
 		0=count .backend.turnTable;
-			$[.backend.check3D[cards];.backend.firstHand3DMsg[];
-			.backend.checkPass[cards];.backend.firstPassMsg[];
-			.backend.passInHand[cards];.backend.passInHandMsg[];
-			.backend.checkInHand[cards];.backend.notInHandMsg[];
-			.backend.roundPlay[cards];.backend.invalidRoundMsg[];
+			$[.backend.check3D[cards];.backend.firstHand3DMsg[usr];
+			.backend.checkPass[cards];.backend.firstPassMsg[usr];
+			.backend.passInHand[cards];.backend.passInHandMsg[usr];
+			.backend.checkInHand[cards];.backend.notInHandMsg[usr];
+			.backend.roundPlay[cards];.backend.invalidRoundMsg[usr];
 			//Play first hand after passing validations
 				[.backend.broadcastPlay[cards];
-				.debug.daryl::"first hand";
 				.backend.turnTableUpdate[a;cards;(.backend.rankCalc a:.backend.roundDict?count .backend.cardDeck?cards)[cards]];
 				.backend.removeCard[cards];
 				.backend.broadcastCardNo'[exec user from .backend.connections;count each .backend.hand];
@@ -38,16 +37,15 @@ playHand:{[cards]
 			$[(1=count .backend.cardDeck?cards)&(max 0=.backend.cardDeck?cards);
 				//Playing a pass
 				[.backend.broadcastPlay[cards];
-				.debug.daryl::"pass turn val";
 				.backend.turnTableUpdate[first -1#exec round from .backend.turnTable;cards;0];
 				.backend.broadcastCardNo'[exec user from .backend.connections;count each .backend.hand];
 				.backend.sendHand[];
 				.backend.nextTurn[]
 				];
 				//Validations if it's a normal hand
-				$[.backend.passInHand[cards];.backend.passInHandMsg[];
-					.backend.checkInHand[cards];.backend.notInHandMsg[];
-					.backend.roundPlay[cards];.backend.invalidRoundMsg[];
+				$[.backend.passInHand[cards];.backend.passInHandMsg[usr];
+					.backend.checkInHand[cards];.backend.notInHandMsg[usr];
+					.backend.roundPlay[cards];.backend.invalidRoundMsg[usr];
 					(.backend.rankValCheck .backend.roundDict?count .backend.cardDeck?cards)[cards];.backend.invalidRankValMsg[];
 				//Play hand after passing validations
 					[.backend.broadcastPlay[cards];
@@ -65,12 +63,11 @@ playHand:{[cards]
 			];	
 
 		//New round validations - run if not new hand and if 3 passes were played
-		$[.backend.passInHand[cards];.backend.passInHandMsg[];
-			.backend.checkInHand[cards];.backend.notInHandMsg[];
-			.backend.roundPlay[cards];.backend.invalidRoundMsg[];
+		$[.backend.passInHand[cards];.backend.passInHandMsg[usr];
+			.backend.checkInHand[cards];.backend.notInHandMsg[usr];
+			.backend.roundPlay[cards];.backend.invalidRoundMsg[usr];
 			//Play new round after passing validations
 			[.backend.broadcastPlay[cards];
-			.debug.daryl::"new round val";
 			.backend.turnTableUpdate[a;cards;(.backend.rankCalc a:.backend.roundDict?count .backend.cardDeck?cards)[cards]];
 			.backend.removeCard[cards];
 			$[.backend.endGame[];
